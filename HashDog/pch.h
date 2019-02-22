@@ -10,5 +10,7 @@
 #define PCH_H
 
 // TODO: add headers that you want to pre-compile here
+#include <string.h>
+#include <utility>
 
 #endif //PCH_H
