@@ -159,12 +159,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Attacker.h" />
     <ClInclude Include="BruteForceGenerator.h" />
     <ClInclude Include="Md5Hash.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Attacker.cpp" />
     <ClCompile Include="BruteForceGenerator.cpp" />
     <ClCompile Include="HashDog.cpp" />
     <ClCompile Include="Md5Hash.cpp" />
