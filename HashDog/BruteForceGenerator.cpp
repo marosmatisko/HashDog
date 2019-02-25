@@ -52,4 +52,13 @@ void BruteForceGenerator::set_start_value(int value, int pointer_index) {
 void BruteForceGenerator::set_end_value(int value, int pointer_index) {
 }
 
+//void BruteForceGenerator::generate_candidates(char *candidates, int password_length, int size) {
+//	char *input_string = new char[password_length + 1];
+//
+//	
+//
+//
+//
+//}
+
 

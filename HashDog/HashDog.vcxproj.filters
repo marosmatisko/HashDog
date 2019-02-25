@@ -30,12 +30,15 @@
     <ClInclude Include="Attacker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="md5.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cuda_crack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HashDog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BruteForceGenerator.cpp">
@@ -50,5 +53,13 @@
     <ClCompile Include="Attacker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HashDog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="md5.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
