@@ -10,18 +10,18 @@
 using namespace std;
 using namespace std::chrono;
 
-const short PASSWORD_LENGTH = 4;
+const short PASSWORD_LENGTH = 6;
 const int HASH_SIZE = 129;
 
 
 int main() {
 	int main_index = 0;
 	
-	Attacker *black_hat = new Attacker(1);
+	Attacker *black_hat = new Attacker(4);
 
 	char* searched_string = new char[PASSWORD_LENGTH + 1];
 	unsigned char* searched_digest = new unsigned char[HASH_SIZE];
-	memcpy(searched_string, "fero", PASSWORD_LENGTH + 1);
+	memcpy(searched_string, "Op1ca!", PASSWORD_LENGTH + 1);
 	Md5Hash *md5_hash = new Md5Hash();
 	md5_hash->hash_message(searched_string, searched_digest);
 

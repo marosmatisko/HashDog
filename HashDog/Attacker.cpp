@@ -5,48 +5,84 @@
 using namespace std;
 
 Attacker::Attacker(int thread_num) : thread_num(thread_num) {
-	md5_hash = new Md5Hash();
+	for (int i = 0; i < thread_num; ++i)
+		md5_hashes.push_back(Md5Hash());
+	thread_pool = new thread[thread_num];
+	successful_thread = -1;
 }
 
 Attacker::~Attacker() {
-	delete md5_hash;
-	delete bfg;
+	md5_hashes.clear();
+	generators.clear();
 
-	delete[] md5_digest;
-	delete[] searched_digest;
+	for (int i = 0; i < thread_num; ++i) {
+		delete[] input_string[i];
+		delete[] computed_digest[i];
+	}
+
 	delete[] input_string;
+	delete[] computed_digest;
+	delete[] searched_digest;
 }
 
-bool Attacker::attack_finished() {
-	return Utility::hashCompare((const char*)searched_digest, (const char*)md5_digest, hash);
+bool Attacker::attack_finished(int index) {
+	if (Utility::hashCompare((const char*)searched_digest, (const char*)computed_digest[index], hash)) {
+		cout << "Finally" << endl;
+		return true;
+	}
+	else return false;
+}
+
+void Attacker::thread_attack(int thread_id) {
+	do {
+		generators.at(thread_id)->set_password_candidate(input_string[thread_id]);
+		md5_hashes.at(thread_id).hash_message(input_string[thread_id], computed_digest[thread_id]);
+	} while (!attack_finished(thread_id) && successful_thread < 0);
+
+	if (successful_thread < 0) {
+		locker.lock();
+		successful_thread = thread_id;
+		locker.unlock();
+	}
 }
 
 void Attacker::perform_attack(int password_length, attack_mode mode, attacked_hash hash,
 	unsigned char* searched_digest) {
-	
-	initialize_attack(mode, hash, password_length, searched_digest);
-	bfg = new BruteForceGenerator(password_length);
-	//bfg->set_start_value(5, 0);
 
-	do {
-		bfg->set_password_candidate(input_string);
-		md5_hash->hash_message(input_string, md5_digest);
-	} while (!attack_finished());
-	cout << "Found it!" << endl;
+	initialize_attack(mode, hash, password_length, searched_digest);
+	for (int i = 0; i < thread_num; ++i) {
+		generators.push_back(new BruteForceGenerator(password_length));
+	}
+	compute_thread_offset();
+
+	for (int i = 0; i < thread_num; ++i) {
+		thread_pool[i] = thread(&Attacker::thread_attack, this, i);
+	}
+
+	for (int i = 0; i < thread_num; ++i) {
+		thread_pool[i].join();
+	}
+
+	if (successful_thread >= 0) {
+		cout << "Found it!" << endl;
+	}
+	else {
+		cout << "Cannot found password!" << endl;
+	}
 }
 
 void Attacker::print_proof() {
 	char* mdString = new char[33];
 	char* mdString2 = new char[33];
 
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 16; ++i) {
 		sprintf(&mdString[i * 2], "%02X", (unsigned int)searched_digest[i]);
-		sprintf(&mdString2[i * 2], "%02X", (unsigned int)md5_digest[i]);
+		sprintf(&mdString2[i * 2], "%02X", (unsigned int)computed_digest[successful_thread][i]);
 	}
 
 	cout << "Old hash: " << mdString << endl;
 	cout << "New hash: " << mdString2 << endl;
-	cout << "Original message was: " << input_string << endl;
+	cout << "Original message was: " << input_string[successful_thread] << endl;
 
 	delete[] mdString; 
 	delete[] mdString2;
@@ -55,8 +91,23 @@ void Attacker::print_proof() {
 void Attacker::initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest) {
 	this->mode = mode;
 	this->hash = hash;
-	md5_digest = new unsigned char[hash];
+
+	input_string = new char*[thread_num];
+	computed_digest = new unsigned char*[thread_num];
+
+	for (int i = 0; i < thread_num; ++i) {
+		computed_digest[i] = new unsigned char[hash];
+		input_string[i] = new char[password_length + 1];
+	}
+	//computed_digest = new unsigned char[hash];
 	this->searched_digest = searched_digest;
-	input_string = new char[password_length + 1];
+	//input_string = new char[password_length + 1];
 }
 
+void Attacker::compute_thread_offset() {
+	int offset, index, characters_count = BruteForceGenerator::get_characters_count();
+	for (int i = 0; i < thread_num; ++i) {
+		offset = i*(characters_count / thread_num); index = 0;
+		generators.at(i)->set_start_value(offset, index);
+	}
+}

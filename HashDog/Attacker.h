@@ -1,6 +1,10 @@
 #pragma once
 #include "Md5Hash.h"
 #include "BruteForceGenerator.h"
+#include <mutex>
+#include <thread>
+#include <vector>
+
 
 class Attacker
 {
@@ -20,18 +24,26 @@ public:
 
 protected:
 	void initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest);
-	bool attack_finished();
+	void compute_thread_offset();
+	void thread_attack(int thread_id);
+	bool attack_finished(int index);
 
 private:
 	int thread_num;
 	int password_length;
+	int successful_thread;
+
 	attack_mode mode;
 	attacked_hash hash;
 
-	unsigned char* md5_digest, *searched_digest;
-	char* input_string;
+	unsigned char* searched_digest;
+	unsigned char** computed_digest;
+	char** input_string;
 
-	Md5Hash *md5_hash;
-	BruteForceGenerator *bfg;
+	std::thread *thread_pool;
+	std::vector<Md5Hash> md5_hashes;
+	std::vector<BruteForceGenerator*> generators;
+
+	std::mutex locker;
 };
 

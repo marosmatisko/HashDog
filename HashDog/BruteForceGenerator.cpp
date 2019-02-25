@@ -52,4 +52,8 @@ void BruteForceGenerator::set_start_value(int value, int pointer_index) {
 void BruteForceGenerator::set_end_value(int value, int pointer_index) {
 }
 
+int BruteForceGenerator::get_characters_count() {
+	return char_count;
+}
+
 
