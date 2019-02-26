@@ -5,14 +5,12 @@
 using namespace std;
 
 Attacker::Attacker(int thread_num) : thread_num(thread_num) {
-	for (int i = 0; i < thread_num; ++i)
-		md5_hashes.push_back(Md5Hash());
 	thread_pool = new thread[thread_num];
 	successful_thread = -1;
 }
 
 Attacker::~Attacker() {
-	md5_hashes.clear();
+	hashes.clear();
 	generators.clear();
 
 	for (int i = 0; i < thread_num; ++i) {
@@ -32,7 +30,7 @@ bool Attacker::attack_finished(int index) {
 void Attacker::thread_attack(int thread_id) {
 	do {
 		generators.at(thread_id)->set_password_candidate(input_string[thread_id]);
-		md5_hashes.at(thread_id).hash_message(input_string[thread_id], computed_digest[thread_id]);
+		hashes.at(thread_id)->hash_message(input_string[thread_id], computed_digest[thread_id]);
 	} while (!attack_finished(thread_id) && successful_thread < 0);
 
 	if (successful_thread < 0) {
@@ -48,7 +46,20 @@ void Attacker::perform_attack(int password_length, attack_mode mode, attacked_ha
 	initialize_attack(mode, hash, password_length, searched_digest);
 	for (int i = 0; i < thread_num; ++i) {
 		generators.push_back(new BruteForceGenerator(password_length));
+		switch (hash)
+		{
+		case Attacker::md5:
+			hashes.push_back(new Md5Hash());
+			break;
+		case Attacker::sha1:
+			hashes.push_back(new Sha1Hash());
+			break;
+		default:
+			break;
+		}
+		
 	}
+	
 	compute_thread_offset();
 
 	for (int i = 0; i < thread_num; ++i) {
@@ -68,10 +79,10 @@ void Attacker::perform_attack(int password_length, attack_mode mode, attacked_ha
 }
 
 void Attacker::print_proof() {
-	char* mdString = new char[33];
-	char* mdString2 = new char[33];
+	char* mdString = new char[hash/4+1];
+	char* mdString2 = new char[hash/4+1];
 
-	for (int i = 0; i < 16; ++i) {
+	for (int i = 0; i < hash/8; ++i) {
 		sprintf(&mdString[i * 2], "%02X", (unsigned int)searched_digest[i]);
 		sprintf(&mdString2[i * 2], "%02X", (unsigned int)computed_digest[successful_thread][i]);
 	}
@@ -95,9 +106,7 @@ void Attacker::initialize_attack(attack_mode mode, attacked_hash hash, int passw
 		computed_digest[i] = new unsigned char[hash];
 		input_string[i] = new char[password_length + 1];
 	}
-	//computed_digest = new unsigned char[hash];
 	this->searched_digest = searched_digest;
-	//input_string = new char[password_length + 1];
 }
 
 void Attacker::compute_thread_offset() {

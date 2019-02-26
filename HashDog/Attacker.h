@@ -1,6 +1,8 @@
 #pragma once
 #include "Md5Hash.h"
+#include "Sha1Hash.h"
 #include "BruteForceGenerator.h"
+#include "CustomHash.h"
 #include <mutex>
 #include <thread>
 #include <vector>
@@ -41,7 +43,7 @@ private:
 	char** input_string;
 
 	std::thread *thread_pool;
-	std::vector<Md5Hash> md5_hashes;
+	std::vector<CustomHash*> hashes;
 	std::vector<BruteForceGenerator*> generators;
 
 	std::mutex locker;

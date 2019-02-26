@@ -27,8 +27,8 @@ void Utility::generateRandomPassword(char * password, int length) {
 
 void Utility::printHumanTime(long duration) {
 	int hours = (int)(duration / (1000 * 3600));
-	int minutes = (int)(duration / (1000 * 60)) - 60*hours;
-	int seconds = (int)(duration / 1000) - 3600*hours - 60*minutes;
+	int minutes = (int)(duration / (1000 * 60)) % 60;
+	int seconds = (int)(duration / 1000) % 60;
 	std::cout << "Hash computation time: " << hours << ":" << minutes << ":" <<
 		seconds << "." << duration % 1000 << std::endl;
 }

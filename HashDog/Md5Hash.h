@@ -1,11 +1,11 @@
 #pragma once
 #include <openssl/md5.h>
+#include "CustomHash.h"
 
-class Md5Hash
+class Md5Hash : public CustomHash
 {
 private:
 	MD5_CTX md5_hash;
-	int hash_size;
 
 public:
 	Md5Hash();

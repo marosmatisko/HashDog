@@ -30,6 +30,12 @@
     <ClInclude Include="Attacker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Sha1Hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomHash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -48,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Attacker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sha1Hash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
