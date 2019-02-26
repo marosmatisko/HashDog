@@ -167,6 +167,7 @@
     <ClInclude Include="Md5Hash.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sha1Hash.h" />
+    <ClInclude Include="Sha256Hash.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +183,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sha1Hash.cpp" />
+    <ClCompile Include="Sha256Hash.cpp" />
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

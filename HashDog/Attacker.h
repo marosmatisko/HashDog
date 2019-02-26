@@ -15,7 +15,7 @@ public:
 	};
 
 	enum attacked_hash {
-		md5 = 128, sha1 = 160
+		md5 = 128, sha1 = 160, sha256 = 256
 	};
 
 	Attacker(int thread_num);

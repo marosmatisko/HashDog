@@ -1,14 +1,13 @@
 // HashDog.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
 #include "pch.h"
 
 
 using namespace std;
 using namespace std::chrono;
 
-const short PASSWORD_LENGTH = 4;
-const Attacker::attacked_hash HASH = Attacker::attacked_hash::sha1;
+const short PASSWORD_LENGTH = 7;
+const Attacker::attacked_hash HASH = Attacker::attacked_hash::sha256;
 const Attacker::attack_mode ATTACK = Attacker::attack_mode::brute_force;
 
 
@@ -18,9 +17,14 @@ int main() {
 	char* searched_string = new char[PASSWORD_LENGTH + 1];
 	unsigned char* searched_digest = new unsigned char[HASH + 1];
 
-	//Utility::generateRandomPassword(searched_string, PASSWORD_LENGTH);
-	memcpy(searched_string, "Op1ca", PASSWORD_LENGTH + 1);
-	//memcpy(searched_string, "ahoj", PASSWORD_LENGTH + 1);
+	switch (PASSWORD_LENGTH) {
+	case 4: memcpy(searched_string, "ahoj", PASSWORD_LENGTH + 1); break; //~0,25s
+	case 5: memcpy(searched_string, "Op1ca", PASSWORD_LENGTH + 1); break; //md5 ~ 36s, sha-1 ~ 39s, sha ~ 40s
+	case 6: memcpy(searched_string, "Op1ca!", PASSWORD_LENGTH + 1); break; //md5 ~ 1:09:30, 
+	default:
+		Utility::generateRandomPassword(searched_string, PASSWORD_LENGTH - 3);
+	}
+		
 	cout << "Searching for password: " << searched_string << endl;
 
 	Attacker *black_hat = new Attacker(2);
@@ -31,6 +35,9 @@ int main() {
 		break;
 	case Attacker::attacked_hash::sha1: 
 		hash = new Sha1Hash();
+		break;
+	case Attacker::attacked_hash::sha256:
+		hash = new Sha256Hash();
 		break;
 	default:
 		hash = new CustomHash();

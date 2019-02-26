@@ -11,6 +11,6 @@ private:
 public:
 	Md5Hash();
 	~Md5Hash();
-	void hash_message(char* message, unsigned char* md5_digest);
+	void hash_message(char* message, unsigned char* digest);
 };
 

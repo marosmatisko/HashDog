@@ -18,6 +18,7 @@
 #include "DictionaryReader.h"
 #include "Md5Hash.h"
 #include "Sha1Hash.h"
+#include "Sha256Hash.h"
 #include "Utility.h"
 
 #include <iostream>

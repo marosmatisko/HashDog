@@ -115,6 +115,9 @@ void Attacker::initialize_vectors() {
 		case Attacker::sha1:
 			hashes.push_back(new Sha1Hash());
 			break;
+		case Attacker::sha256:
+			hashes.push_back(new Sha256Hash());
+			break;
 		}
 	}
 }
