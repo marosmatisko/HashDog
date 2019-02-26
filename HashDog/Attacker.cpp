@@ -26,11 +26,7 @@ Attacker::~Attacker() {
 }
 
 bool Attacker::attack_finished(int index) {
-	if (Utility::hashCompare((const char*)searched_digest, (const char*)computed_digest[index], hash)) {
-		cout << "Finally" << endl;
-		return true;
-	}
-	else return false;
+	return Utility::hashCompare((const char*)searched_digest, (const char*)computed_digest[index], hash);
 }
 
 void Attacker::thread_attack(int thread_id) {

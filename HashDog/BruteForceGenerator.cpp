@@ -4,7 +4,7 @@
 
 BruteForceGenerator::BruteForceGenerator(int password_size) { 
 	lenght = password_size;
-	internal_pointers = new std::bitset<7>[password_size];
+	internal_pointers = new std::bitset<pointer_size>[password_size];
 }
 
 BruteForceGenerator::~BruteForceGenerator() {
@@ -13,7 +13,7 @@ BruteForceGenerator::~BruteForceGenerator() {
 
 void BruteForceGenerator::increment_pointer(int index) {
 	
-	for (size_t i = 0; i < 7; ++i) {
+	for (size_t i = 0; i < pointer_size; ++i) {
 		if (internal_pointers[index][i] == 0) {
 			for (int j = 0; j <= i; ++j) {
 				internal_pointers[index][j].flip();
@@ -37,15 +37,15 @@ void BruteForceGenerator::set_password_candidate(char *candidate) {
 }
 
 void BruteForceGenerator::set_start_value(int value, int pointer_index) {
-	int temp_value = 64;
-	for (int i = pointer_size - 1; i >= 0; ) {
+	int temp_value;
+	for (int i = pointer_size; i > 0; ) {
+		temp_value = (int)pow(2, --i);
 		if (value >= temp_value) {
 			internal_pointers[pointer_index].set(i);
 			value -= temp_value;
 		} else {
 			internal_pointers[pointer_index].reset(i);
 		}
-		temp_value = (int)pow(2, --i);
 	}
 }
 //prepaired for use in MT version
@@ -54,6 +54,10 @@ void BruteForceGenerator::set_end_value(int value, int pointer_index) {
 
 int BruteForceGenerator::get_characters_count() {
 	return char_count;
+}
+
+char BruteForceGenerator::getCharacter(int index) {
+	return letters[index];
 }
 
 
