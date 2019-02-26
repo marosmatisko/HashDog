@@ -13,10 +13,9 @@ static const char letters[char_count] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'
 										  '8', '9', ' ', ',', '-', '_', '.', '?', '!', '&',
 										  '@', '#', '$', '%', '^', '*', ':', '~', '{', '}' };
 
-class BruteForceGenerator
+class BruteForceGenerator : public CandidateGenerator
 {
 private:
-	int lenght;
 	std::bitset<pointer_size> *internal_pointers;
 	
 protected:

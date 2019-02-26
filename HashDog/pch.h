@@ -13,7 +13,9 @@
 
 #include "Attacker.h"
 #include "BruteForceGenerator.h"
+#include "CandidateGenerator.h"
 #include "CustomHash.h"
+#include "DictionaryReader.h"
 #include "Md5Hash.h"
 #include "Sha1Hash.h"
 #include "Utility.h"

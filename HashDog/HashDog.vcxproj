@@ -161,7 +161,9 @@
   <ItemGroup>
     <ClInclude Include="Attacker.h" />
     <ClInclude Include="BruteForceGenerator.h" />
+    <ClInclude Include="CandidateGenerator.h" />
     <ClInclude Include="CustomHash.h" />
+    <ClInclude Include="DictionaryReader.h" />
     <ClInclude Include="Md5Hash.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sha1Hash.h" />
@@ -170,6 +172,7 @@
   <ItemGroup>
     <ClCompile Include="Attacker.cpp" />
     <ClCompile Include="BruteForceGenerator.cpp" />
+    <ClCompile Include="DictionaryReader.cpp" />
     <ClCompile Include="HashDog.cpp" />
     <ClCompile Include="Md5Hash.cpp" />
     <ClCompile Include="pch.cpp">

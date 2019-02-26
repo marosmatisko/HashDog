@@ -36,6 +36,12 @@
     <ClInclude Include="CustomHash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DictionaryReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CandidateGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -57,6 +63,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sha1Hash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DictionaryReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

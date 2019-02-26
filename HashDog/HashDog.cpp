@@ -8,21 +8,22 @@ using namespace std;
 using namespace std::chrono;
 
 const short PASSWORD_LENGTH = 4;
-const Attacker::attacked_hash HASH = Attacker::attacked_hash::md5;
+const Attacker::attacked_hash HASH = Attacker::attacked_hash::sha1;
 const Attacker::attack_mode ATTACK = Attacker::attack_mode::brute_force;
 
 
 int main() {
-	srand((unsigned int)time(NULL));
-	
-	Attacker *black_hat = new Attacker(2);
+	srand((unsigned int)time(NULL));	
 
 	char* searched_string = new char[PASSWORD_LENGTH + 1];
 	unsigned char* searched_digest = new unsigned char[HASH + 1];
+
 	//Utility::generateRandomPassword(searched_string, PASSWORD_LENGTH);
-	//memcpy(searched_string, "Op1ca!", PASSWORD_LENGTH + 1);
-	memcpy(searched_string, "ahoj", PASSWORD_LENGTH + 1);
+	memcpy(searched_string, "Op1ca", PASSWORD_LENGTH + 1);
+	//memcpy(searched_string, "ahoj", PASSWORD_LENGTH + 1);
 	cout << "Searching for password: " << searched_string << endl;
+
+	Attacker *black_hat = new Attacker(2);
 	CustomHash* hash;
 	switch (HASH) {
 	case Attacker::attacked_hash::md5: 

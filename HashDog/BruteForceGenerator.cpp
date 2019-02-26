@@ -2,8 +2,8 @@
 #include "pch.h"
 
 
-BruteForceGenerator::BruteForceGenerator(int password_size) { 
-	lenght = password_size;
+BruteForceGenerator::BruteForceGenerator(int password_size) {
+	length = password_size;
 	internal_pointers = new std::bitset<pointer_size>[password_size];
 }
 
@@ -28,12 +28,11 @@ void BruteForceGenerator::increment_pointer(int index) {
 }
 
 void BruteForceGenerator::set_password_candidate(char *candidate) {
-	//char* candidate_temp = new char[lenght+1];
-	for (int i = 0; i < lenght; ++i) {
+	for (int i = 0; i < length; ++i) {
 		candidate[i] = letters[(uint8_t)internal_pointers[i].to_ulong()];
 	}
-	candidate[lenght] = '\0';
-	increment_pointer(lenght - 1);
+	candidate[length] = '\0';
+	increment_pointer(length - 1);
 }
 
 void BruteForceGenerator::set_start_value(int value, int pointer_index) {

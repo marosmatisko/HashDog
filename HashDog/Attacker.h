@@ -1,5 +1,5 @@
 #pragma once
-#include "BruteForceGenerator.h"
+#include "CandidateGenerator.h"
 #include "CustomHash.h"
 #include "pch.h"
 #include <mutex>
@@ -25,6 +25,7 @@ public:
 
 protected:
 	void initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest);
+	void initialize_vectors();
 	void compute_thread_offset();
 	void thread_attack(int thread_id);
 	bool attack_finished(int index);
@@ -43,7 +44,7 @@ private:
 
 	std::thread *thread_pool;
 	std::vector<CustomHash*> hashes;
-	std::vector<BruteForceGenerator*> generators;
+	std::vector<CandidateGenerator*> generators;
 
 	std::mutex locker;
 };

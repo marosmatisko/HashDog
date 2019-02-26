@@ -44,23 +44,10 @@ void Attacker::perform_attack(int password_length, attack_mode mode, attacked_ha
 	unsigned char* searched_digest) {
 
 	initialize_attack(mode, hash, password_length, searched_digest);
-	for (int i = 0; i < thread_num; ++i) {
-		generators.push_back(new BruteForceGenerator(password_length));
-		switch (hash)
-		{
-		case Attacker::md5:
-			hashes.push_back(new Md5Hash());
-			break;
-		case Attacker::sha1:
-			hashes.push_back(new Sha1Hash());
-			break;
-		default:
-			break;
-		}
-		
-	}
+	initialize_vectors();
 	
-	compute_thread_offset();
+	if (mode == Attacker::attack_mode::brute_force)
+		compute_thread_offset();
 
 	for (int i = 0; i < thread_num; ++i) {
 		thread_pool[i] = thread(&Attacker::thread_attack, this, i);
@@ -72,8 +59,7 @@ void Attacker::perform_attack(int password_length, attack_mode mode, attacked_ha
 
 	if (successful_thread >= 0) {
 		cout << "Found it!" << endl;
-	}
-	else {
+	} else {
 		cout << "Cannot found password!" << endl;
 	}
 }
@@ -98,6 +84,7 @@ void Attacker::print_proof() {
 void Attacker::initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest) {
 	this->mode = mode;
 	this->hash = hash;
+	this->password_length = password_length;
 
 	input_string = new char*[thread_num];
 	computed_digest = new unsigned char*[thread_num];
@@ -109,10 +96,33 @@ void Attacker::initialize_attack(attack_mode mode, attacked_hash hash, int passw
 	this->searched_digest = searched_digest;
 }
 
+void Attacker::initialize_vectors() {
+	for (int i = 0; i < thread_num; ++i) {
+		switch (mode)
+		{
+		case Attacker::brute_force:
+			generators.push_back(new BruteForceGenerator(password_length));
+			break;
+		case Attacker::dictionary:
+			generators.push_back(new DictionaryReader(password_length));
+			break;
+		}
+		switch (hash)
+		{
+		case Attacker::md5:
+			hashes.push_back(new Md5Hash());
+			break;
+		case Attacker::sha1:
+			hashes.push_back(new Sha1Hash());
+			break;
+		}
+	}
+}
+
 void Attacker::compute_thread_offset() {
 	int offset, index, characters_count = BruteForceGenerator::get_characters_count();
 	for (int i = 0; i < thread_num; ++i) {
 		offset = i*(characters_count / thread_num); index = 0;
-		generators.at(i)->set_start_value(offset, index);
+		static_cast<BruteForceGenerator*>(generators.at(i))->set_start_value(offset, index);
 	}
 }
