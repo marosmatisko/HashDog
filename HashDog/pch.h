@@ -11,10 +11,13 @@
 
 // TODO: add headers that you want to pre-compile here
 
-#include <chrono>
-#include <iostream>
-#include <string.h>
-#include <utility>
+#include "Attacker.h"
+#include "BruteForceGenerator.h"
+#include "CustomHash.h"
+#include "Md5Hash.h"
+#include "Sha1Hash.h"
+#include "Utility.h"
 
+#include <iostream>
 
 #endif //PCH_H

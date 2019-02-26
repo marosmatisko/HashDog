@@ -2,11 +2,7 @@
 //
 
 #include "pch.h"
-#include "BruteForceGenerator.h"
-#include "Md5Hash.h"
-#include "Sha1Hash.h"
-#include "Utility.h"
-#include "Attacker.h"
+
 
 using namespace std;
 using namespace std::chrono;

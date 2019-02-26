@@ -1,8 +1,7 @@
 #pragma once
-#include "Md5Hash.h"
-#include "Sha1Hash.h"
 #include "BruteForceGenerator.h"
 #include "CustomHash.h"
+#include "pch.h"
 #include <mutex>
 #include <thread>
 #include <vector>

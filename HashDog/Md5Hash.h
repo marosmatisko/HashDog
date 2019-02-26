@@ -1,6 +1,7 @@
 #pragma once
 #include <openssl/md5.h>
-#include "CustomHash.h"
+#include "pch.h"
+
 
 class Md5Hash : public CustomHash
 {

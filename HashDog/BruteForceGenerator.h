@@ -1,5 +1,6 @@
 #pragma once
 #include <bitset>
+#include "pch.h"
 
 constexpr auto char_count = 80;
 constexpr int pointer_size = 7;

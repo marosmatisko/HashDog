@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "Sha1Hash.h"
+#include "pch.h"
 
 
 Sha1Hash::Sha1Hash() { hash_size = 160; }

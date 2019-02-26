@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "Md5Hash.h"
+#include "pch.h"
 
 
 Md5Hash::Md5Hash() { hash_size = 128; }

@@ -1,5 +1,5 @@
-#include "pch.h"
 #include "BruteForceGenerator.h"
+#include "pch.h"
 
 
 BruteForceGenerator::BruteForceGenerator(int password_size) { 

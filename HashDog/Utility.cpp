@@ -1,6 +1,5 @@
-#include "pch.h"
 #include "Utility.h"
-#include "BruteForceGenerator.h"
+#include "pch.h"
 
 
 Utility::Utility() {}

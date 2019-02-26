@@ -1,6 +1,7 @@
 #pragma once
 #include <openssl/sha.h>
-#include "CustomHash.h"
+#include "pch.h"
+
 
 class Sha1Hash : public CustomHash
 {
