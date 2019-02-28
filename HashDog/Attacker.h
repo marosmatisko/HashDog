@@ -20,15 +20,16 @@ public:
 
 	Attacker(int thread_num);
 	~Attacker();
-	void perform_attack(int password_length, attack_mode mode, attacked_hash hash, unsigned char* searched_digest);
+	void perform_attack(int password_length, attack_mode mode, attacked_hash hash, unsigned char* searched_digest, const char* dictionary_filename);
 	void print_proof();
 
 protected:
 	void initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest);
-	void initialize_vectors();
+	void initialize_vectors(const char* dictionary_filename);
 	void compute_thread_offset();
 	void thread_attack(int thread_id);
 	bool attack_finished(int index);
+	void reader_thread_attack(const char* dictionary_filename);
 
 private:
 	int thread_num;

@@ -7,6 +7,6 @@ public:
 	virtual void set_password_candidate(char *candidate) {};
 
 protected:
-	int length;
+	size_t length;
 };
 

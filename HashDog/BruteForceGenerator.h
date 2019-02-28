@@ -22,7 +22,7 @@ protected:
 	void increment_pointer(int index);
 
 public:
-	BruteForceGenerator(int password_size);
+	BruteForceGenerator(size_t password_size);
 	~BruteForceGenerator();
 	void set_password_candidate(char *candidate);
 	void set_start_value(int value, int pointer_index);

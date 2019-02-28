@@ -40,17 +40,30 @@ void Attacker::thread_attack(int thread_id) {
 	}
 }
 
+void Attacker::reader_thread_attack(const char* dictionary_filename) {
+	DictionaryReader *reader = new DictionaryReader(password_length, dictionary_filename);
+	reader->read_file();
+}
+
 void Attacker::perform_attack(int password_length, attack_mode mode, attacked_hash hash,
-	unsigned char* searched_digest) {
+	unsigned char* searched_digest, const char* dictionary_filename) {
 
 	initialize_attack(mode, hash, password_length, searched_digest);
-	initialize_vectors();
+	initialize_vectors(dictionary_filename);
 	
-	if (mode == Attacker::attack_mode::brute_force)
+	std::vector<thread> readers;
+	if (mode == Attacker::attack_mode::brute_force) {
 		compute_thread_offset();
+	} else if (mode == Attacker::attack_mode::dictionary) {
+		readers.push_back(thread(&Attacker::reader_thread_attack, this, dictionary_filename));
+	}
 
 	for (int i = 0; i < thread_num; ++i) {
 		thread_pool[i] = thread(&Attacker::thread_attack, this, i);
+	}
+
+	if (mode == Attacker::attack_mode::dictionary && !readers.empty()) {
+		readers.front().join();
 	}
 
 	for (int i = 0; i < thread_num; ++i) {
@@ -96,7 +109,7 @@ void Attacker::initialize_attack(attack_mode mode, attacked_hash hash, int passw
 	this->searched_digest = searched_digest;
 }
 
-void Attacker::initialize_vectors() {
+void Attacker::initialize_vectors(const char* dictionary_filename) {
 	for (int i = 0; i < thread_num; ++i) {
 		switch (mode)
 		{
@@ -104,7 +117,7 @@ void Attacker::initialize_vectors() {
 			generators.push_back(new BruteForceGenerator(password_length));
 			break;
 		case Attacker::dictionary:
-			generators.push_back(new DictionaryReader(password_length));
+			generators.push_back(new DictionaryReader(password_length, nullptr));
 			break;
 		}
 		switch (hash)
