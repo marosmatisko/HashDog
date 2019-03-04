@@ -20,7 +20,7 @@ int main() {
 	switch (PASSWORD_LENGTH) {
 	case 4: memcpy(searched_string, "what", PASSWORD_LENGTH + 1); break; //~0,25s
 	case 5: memcpy(searched_string, "Op1ca", PASSWORD_LENGTH + 1); break; //md5 ~ 36s, sha-1 ~ 39s, sha ~ 40s
-	case 6: memcpy(searched_string, "drew10", PASSWORD_LENGTH + 1); break; //md5 ~ 1:09:30, 808080 (5k in rockyou) ~ 2.6s, wiggle(20k) ~ 8.6s, drew10 (150k) ~ 60.5s, 
+	case 6: memcpy(searched_string, "tester", PASSWORD_LENGTH + 1); break; //md5 ~ 1:09:30, 808080 (5k in rockyou) ~ 2.6s, wiggle(20k) ~ 8.6s, drew10 (150k) ~ 60.5s, 
 																			//bud111 (1M) ~ 5:21.7, norado (1M4 - 10% rockyou) ~ 7:18.8
 	default:
 		Utility::generate_random_password(searched_string, PASSWORD_LENGTH - 3);
@@ -47,7 +47,7 @@ int main() {
 
 	//ATTACK with stopwatch! 
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	black_hat->perform_attack(PASSWORD_LENGTH, ATTACK, HASH, searched_digest, "E:\\Documents\\FEKT\\8.sem\\MKRI\\Projekt\\HashDog\\HashDog\\HashDog\\rockyou.txt");
+	black_hat->perform_attack(PASSWORD_LENGTH, ATTACK, HASH, searched_digest, "E:\\Documents\\FEKT\\8.sem\\MKRI\\Projekt\\HashDog\\HashDog\\HashDog\\dic500.txt");
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
 	if (black_hat->was_attack_successful())

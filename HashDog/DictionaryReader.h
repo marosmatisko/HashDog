@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "FifoBuffer.h"
 #include <array>
+#include <condition_variable>
 #include <fstream>
 #include <mutex>
 #include <string>
@@ -20,7 +21,9 @@ public:
 	static std::ifstream* file;
 
 private:
+	bool reading_complete;
 	arr temp_storage;
 	std::mutex locker;
+	std::condition_variable condition;
 };
 

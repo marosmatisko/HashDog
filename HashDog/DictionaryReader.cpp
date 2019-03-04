@@ -12,6 +12,7 @@ DictionaryReader::DictionaryReader(size_t password_size, const char* filename) {
 		file = new std::ifstream(filename, std::ifstream::out);
 		if (!file->is_open())
 			file->open(filename, std::ifstream::out);
+		reading_complete = false;
 	}
 }
 
@@ -21,18 +22,26 @@ DictionaryReader::~DictionaryReader() {
 }
 
 void DictionaryReader::set_password_candidate(char *candidate) {
-	if (!buffer.empty()) {
-		temp_storage = buffer.pop();
-		Utility::std_array_to_c_array(temp_storage, candidate, length);
+	{
+		std::unique_lock<std::mutex> lock(this->locker);
+		if (!buffer.empty()) {
+			temp_storage = buffer.pop();
+			Utility::std_array_to_c_array(temp_storage, candidate, length);
+		}
+	}
+	if (reading_complete && buffer.empty()) {
+		condition.notify_one();
+		std::unique_lock<std::mutex> lock(this->locker);
+		reading_complete = false;
 	}
 }
 
-void DictionaryReader::read_file(std::atomic<int>& successful_thread) { //fix length
+void DictionaryReader::read_file(std::atomic<int>& successful_thread) { //exact length for now
 	char* temp_buffer = new char[256];
 	arr temp;
 
 	while(!file->getline(temp_buffer, 255).eof() && (successful_thread == -1)) {
-		if (strlen(temp_buffer) == (length)) {
+		if (strlen(temp_buffer) == length) {
 			std::this_thread::sleep_for(std::chrono::microseconds(20));
 			char* password_buffer = new char[length + 1];
 			memcpy(password_buffer, temp_buffer, length + 1);		
@@ -40,9 +49,10 @@ void DictionaryReader::read_file(std::atomic<int>& successful_thread) { //fix le
 			buffer.push(temp);
 		}
 	}
+	reading_complete = true;
 	if (successful_thread == -1) {
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
-		std::lock_guard<std::mutex> lock(locker);
+		std::unique_lock<std::mutex> lock(this->locker);
+		condition.wait(lock, [this] {return this->buffer.empty(); });
 		successful_thread = -2;
 	}
 }
