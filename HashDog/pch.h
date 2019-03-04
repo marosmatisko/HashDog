@@ -16,6 +16,7 @@
 #include "CandidateGenerator.h"
 #include "CustomHash.h"
 #include "DictionaryReader.h"
+#include "FifoBuffer.h"
 #include "Md5Hash.h"
 #include "Sha1Hash.h"
 #include "Sha256Hash.h"

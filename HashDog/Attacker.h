@@ -2,6 +2,7 @@
 #include "CandidateGenerator.h"
 #include "CustomHash.h"
 #include "pch.h"
+#include <atomic>
 #include <mutex>
 #include <thread>
 #include <vector>
@@ -21,6 +22,7 @@ public:
 	Attacker(int thread_num);
 	~Attacker();
 	void perform_attack(int password_length, attack_mode mode, attacked_hash hash, unsigned char* searched_digest, const char* dictionary_filename);
+	bool was_attack_successful();
 	void print_proof();
 
 protected:
@@ -29,12 +31,12 @@ protected:
 	void compute_thread_offset();
 	void thread_attack(int thread_id);
 	bool attack_finished(int index);
-	void reader_thread_attack(const char* dictionary_filename);
+	void reader_thread_attack(const char* dictionary_filename, std::atomic<int>& succesful_thread);
 
 private:
 	int thread_num;
 	int password_length;
-	int successful_thread;
+	std::atomic<int> successful_thread;
 
 	attack_mode mode;
 	attacked_hash hash;

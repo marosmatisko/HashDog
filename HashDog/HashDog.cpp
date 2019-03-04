@@ -18,11 +18,12 @@ int main() {
 	unsigned char* searched_digest = new unsigned char[HASH + 1];
 
 	switch (PASSWORD_LENGTH) {
-	case 4: memcpy(searched_string, "1234", PASSWORD_LENGTH + 1); break; //~0,25s
+	case 4: memcpy(searched_string, "what", PASSWORD_LENGTH + 1); break; //~0,25s
 	case 5: memcpy(searched_string, "Op1ca", PASSWORD_LENGTH + 1); break; //md5 ~ 36s, sha-1 ~ 39s, sha ~ 40s
-	case 6: memcpy(searched_string, "123456", PASSWORD_LENGTH + 1); break; //md5 ~ 1:09:30, 
+	case 6: memcpy(searched_string, "drew10", PASSWORD_LENGTH + 1); break; //md5 ~ 1:09:30, 808080 (5k in rockyou) ~ 2.6s, wiggle(20k) ~ 8.6s, drew10 (150k) ~ 60.5s, 
+																			//bud111 (1M) ~ 5:21.7, norado (1M4 - 10% rockyou) ~ 7:18.8
 	default:
-		Utility::generateRandomPassword(searched_string, PASSWORD_LENGTH - 3);
+		Utility::generate_random_password(searched_string, PASSWORD_LENGTH - 3);
 	}
 		
 	cout << "Searching for password: " << searched_string << endl;
@@ -46,11 +47,12 @@ int main() {
 
 	//ATTACK with stopwatch! 
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	black_hat->perform_attack(PASSWORD_LENGTH, ATTACK, HASH, searched_digest, "E:\\Documents\\FEKT\\8.sem\\MKRI\\Projekt\\HashDog\\HashDog\\HashDog\\Dic500.txt");
+	black_hat->perform_attack(PASSWORD_LENGTH, ATTACK, HASH, searched_digest, "E:\\Documents\\FEKT\\8.sem\\MKRI\\Projekt\\HashDog\\HashDog\\HashDog\\rockyou.txt");
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
-	black_hat->print_proof();
+	if (black_hat->was_attack_successful())
+		black_hat->print_proof();
 
 	long duration = (long)duration_cast<milliseconds>(t2 - t1).count();
-	Utility::printHumanTime(duration);
+	Utility::print_human_time(duration);
 }

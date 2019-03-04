@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "DictionaryReader.h"
+#include "FifoBuffer.h"
+#include <thread>
 
-std::deque<char*> DictionaryReader::buffer;
+FifoBuffer<arr> DictionaryReader::buffer;
 std::ifstream* DictionaryReader::file;
 
 DictionaryReader::DictionaryReader(size_t password_size, const char* filename) {
@@ -19,23 +21,28 @@ DictionaryReader::~DictionaryReader() {
 }
 
 void DictionaryReader::set_password_candidate(char *candidate) {
-	locker.lock();
 	if (!buffer.empty()) {
-		memcpy(candidate, buffer.front(), length + 1);
-		buffer.pop_front();
+		temp_storage = buffer.pop();
+		Utility::std_array_to_c_array(temp_storage, candidate, length);
 	}
-	locker.unlock();
 }
 
-void DictionaryReader::read_file() { //fix length
-	char* temp_buffer = new char[11];
-	while(!file->getline(temp_buffer, 10).eof()) {
+void DictionaryReader::read_file(std::atomic<int>& successful_thread) { //fix length
+	char* temp_buffer = new char[256];
+	arr temp;
+
+	while(!file->getline(temp_buffer, 255).eof() && (successful_thread == -1)) {
 		if (strlen(temp_buffer) == (length)) {
+			std::this_thread::sleep_for(std::chrono::microseconds(20));
 			char* password_buffer = new char[length + 1];
-			memcpy(password_buffer, temp_buffer, length + 1);
-			locker.lock();
-			buffer.push_back(password_buffer);
-			locker.unlock();
+			memcpy(password_buffer, temp_buffer, length + 1);		
+			Utility::c_array_to_std_array(password_buffer, temp, length);
+			buffer.push(temp);
 		}
+	}
+	if (successful_thread == -1) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		std::lock_guard<std::mutex> lock(locker);
+		successful_thread = -2;
 	}
 }

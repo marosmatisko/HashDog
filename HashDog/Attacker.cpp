@@ -24,25 +24,24 @@ Attacker::~Attacker() {
 }
 
 bool Attacker::attack_finished(int index) {
-	return Utility::hashCompare((const char*)searched_digest, (const char*)computed_digest[index], hash);
+	return Utility::hash_compare((const char*)searched_digest, (const char*)computed_digest[index], hash);
 }
 
 void Attacker::thread_attack(int thread_id) {
 	do {
 		generators.at(thread_id)->set_password_candidate(input_string[thread_id]);
 		hashes.at(thread_id)->hash_message(input_string[thread_id], computed_digest[thread_id]);
-	} while (!attack_finished(thread_id) && successful_thread < 0);
+	} while (!attack_finished(thread_id) && successful_thread == -1);
 
-	if (successful_thread < 0) {
-		locker.lock();
+	if (successful_thread == -1) {
+		std::lock_guard<std::mutex> lock(locker);
 		successful_thread = thread_id;
-		locker.unlock();
 	}
 }
 
-void Attacker::reader_thread_attack(const char* dictionary_filename) {
+void Attacker::reader_thread_attack(const char* dictionary_filename, std::atomic<int>& succesful_thread) {
 	DictionaryReader *reader = new DictionaryReader(password_length, dictionary_filename);
-	reader->read_file();
+	reader->read_file(succesful_thread);
 }
 
 void Attacker::perform_attack(int password_length, attack_mode mode, attacked_hash hash,
@@ -55,7 +54,7 @@ void Attacker::perform_attack(int password_length, attack_mode mode, attacked_ha
 	if (mode == Attacker::attack_mode::brute_force) {
 		compute_thread_offset();
 	} else if (mode == Attacker::attack_mode::dictionary) {
-		readers.push_back(thread(&Attacker::reader_thread_attack, this, dictionary_filename));
+		readers.push_back(thread(&Attacker::reader_thread_attack, this, dictionary_filename, std::ref(successful_thread)));
 	}
 
 	for (int i = 0; i < thread_num; ++i) {
@@ -75,6 +74,10 @@ void Attacker::perform_attack(int password_length, attack_mode mode, attacked_ha
 	} else {
 		cout << "Cannot found password!" << endl;
 	}
+}
+
+bool Attacker::was_attack_successful() {
+	return successful_thread >= 0;
 }
 
 void Attacker::print_proof() {

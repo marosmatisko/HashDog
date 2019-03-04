@@ -164,6 +164,7 @@
     <ClInclude Include="CandidateGenerator.h" />
     <ClInclude Include="CustomHash.h" />
     <ClInclude Include="DictionaryReader.h" />
+    <ClInclude Include="FifoBuffer.h" />
     <ClInclude Include="Md5Hash.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sha1Hash.h" />
