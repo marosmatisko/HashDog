@@ -18,8 +18,8 @@ bool Utility::hash_compare(const char* first_hash, const char* second_hash, int 
 void Utility::generate_random_password(char * password, int length) {
 	int index;
 	for (int i = 0; i < length; ++i) {
-		index = rand() % BruteForceGenerator::get_characters_count();
-		password[i] = BruteForceGenerator::getCharacter(index);
+		index = rand() % char_count;
+		password[i] = all_symbols[index];
 	}
 	password[length] = '\0';
 }
@@ -41,11 +41,20 @@ void Utility::c_array_to_std_array(const char* input, arr& output, size_t length
 }
 
 char Utility::hex_pair_to_ascii_char(const char* hex) {
-	return (hex[0] << 8) & (hex[1]);
+	char result = hex_char_to_hex_value(hex[0]) << 4;
+	return (result | hex_char_to_hex_value(hex[1]));
 }
 
 void Utility::ascii_char_to_hex_pair(const char ascii, char* pair) {
-	pair[0] = ascii & 0x00FF;
-	pair[1] = ascii & 0xFF00;
+	pair[0] = hex_value_to_hex_char((ascii >> 4) & 0xF);
+	pair[1] = hex_value_to_hex_char(ascii & 0xF);
+}
+
+char Utility::hex_value_to_hex_char(const char hex_value) {
+	return (hex_value < 10) ? (hex_value + '0') : (hex_value + 'A' - 10);
+}
+
+char Utility::hex_char_to_hex_value(const char hex_char) {
+	return (hex_char < 'A') ? (hex_char - '0') : (hex_char - 'A' + 10);
 }
 

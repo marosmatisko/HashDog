@@ -28,7 +28,7 @@ void BruteForceGenerator::increment_pointer(int index) {
 
 void BruteForceGenerator::set_password_candidate(char *candidate) {
 	for (size_t i = 0; i < length; ++i) {
-		candidate[i] = letters[(uint8_t)internal_pointers[i].to_ulong()];
+		candidate[i] = all_symbols[(uint8_t)internal_pointers[i].to_ulong()];
 	}
 	candidate[length] = '\0';
 	increment_pointer((int)length - 1);
@@ -46,13 +46,3 @@ void BruteForceGenerator::set_start_value(int value, int pointer_index) {
 		}
 	}
 }
-
-int BruteForceGenerator::get_characters_count() {
-	return char_count;
-}
-
-char BruteForceGenerator::getCharacter(int index) {
-	return letters[index];
-}
-
-

@@ -114,7 +114,7 @@ char MaskGenerator::get_character_by_mask(character_mask mask, int index) {
 	case full_alphabet: { result_char = alphabet[index]; break; }
 	case special_chars: { result_char = special_characters[index]; break; }
 	case numbers: { result_char = index + '0'; break; }
-	case any_char: { result_char = letters[index]; break; }
+	case any_char: { result_char = all_symbols[index]; break; }
 	}
 
 	return result_char;

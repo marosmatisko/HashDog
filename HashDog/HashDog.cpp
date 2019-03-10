@@ -70,35 +70,31 @@ int param_process(int argc, char* argv[]) {
 				break;
 			}
 
-			if (attack != Attacker::attack_mode::brute_force && argc == 5) {
+			if (attack != Attacker::attack_mode::brute_force) {
+				if (argc != 5) {
+					cout << "Missing additional parameter!" << endl;
+					return -1;
+				}
 				additional_param = new char[strlen(argv[4])];
 				strcpy((char *)additional_param, argv[4]);
 			}
-			else return -1;
 	}
 	return 1;
 }
 
-	// "*Amy69"
+	//*Amy69 - 37:20
 	//d5 ~ 1:09:30, 808080 (5k in rockyou) ~ 2.6s, wiggle(20k) ~ 8.6s, drew10 (150k) ~ 60.5s, *Amy69
 	//bud111 (1M) ~ 5:21.7, norado (1M4 - 10% rockyou) ~ 7:18.8, flirt4 (1M8) ~ 8:20, yupa88 (2M5) ~ 11:20
-	//Utility::generate_random_password(searched_string, PASSWORD_LENGTH - 3);
+	//Utility::generate_random_password(searched_string, pass_length - 3);
 
 int main(int argc, char* argv[]) {
 	srand((unsigned int)time(NULL));
-
-	/*
-	char* pair = new char[3]; char hex = 33;
-	pair[2] = '\0';
-	Utility::ascii_char_to_hex_pair(hex, pair);
-	cout << pair << endl;
-	*/
 
 	if (param_process(argc, argv) < 0) return 1;
 	cout << "Searching for password: " << searched_input << endl;
 
 	if (searched_digest == nullptr)
-		searched_digest = new unsigned char[used_hash + 1];
+		searched_digest = new unsigned char[used_hash/8 + 1];
 	Attacker *black_hat = new Attacker(2);
 
 	if (searched_input != nullptr) {

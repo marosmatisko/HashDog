@@ -3,6 +3,10 @@
 
 class Utility
 {
+private:
+	static char hex_value_to_hex_char(const char hex_value);
+	static char hex_char_to_hex_value(const char hex_char);
+
 public:
 	Utility();
 	~Utility();

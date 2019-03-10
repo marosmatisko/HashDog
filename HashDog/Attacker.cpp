@@ -24,7 +24,7 @@ Attacker::~Attacker() {
 }
 
 bool Attacker::attack_finished(int index) {
-	return Utility::hash_compare((const char*)searched_digest, (const char*)computed_digest[index], hash);
+	return Utility::hash_compare((const char*)searched_digest, (const char*)computed_digest[index], hash/8);
 }
 
 void Attacker::thread_attack(int thread_id) {
@@ -114,8 +114,7 @@ void Attacker::initialize_attack(attack_mode mode, attacked_hash hash, int passw
 
 void Attacker::initialize_vectors(const char* additional_param) {
 	for (int i = 0; i < thread_num; ++i) {
-		switch (mode)
-		{
+		switch (mode) {
 		case Attacker::brute_force:
 			generators.push_back(new BruteForceGenerator(password_length));
 			break;
@@ -125,8 +124,8 @@ void Attacker::initialize_vectors(const char* additional_param) {
 		case Attacker::mask:
 			generators.push_back(new MaskGenerator(additional_param));
 		}
-		switch (hash)
-		{
+
+		switch (hash) {
 		case Attacker::md5:
 			hashes.push_back(new Md5Hash());
 			break;

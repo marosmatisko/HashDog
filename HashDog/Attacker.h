@@ -21,16 +21,13 @@ public:
 
 	Attacker(int thread_num);
 	~Attacker();
-	void perform_brute_force_attack(int password_length, attacked_hash hash, unsigned char* searched_digest);
-	void perform_dictionary_attack(int password_length, attacked_hash hash, unsigned char* searched_digest, const char* dictionary_filename);
-	void perform_mask_attack();
 	void perform_attack(int password_length, attack_mode mode, attacked_hash hash, unsigned char* searched_digest, const char* dictionary_filename);
 	bool was_attack_successful();
 	void print_proof();
 
 protected:
 	void initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest);
-	void initialize_vectors(const char* dictionary_filename);
+	void initialize_vectors(const char* additional_param);
 	void compute_thread_offset(attack_mode mode);
 	void thread_attack(int thread_id);
 	bool attack_finished(int index);

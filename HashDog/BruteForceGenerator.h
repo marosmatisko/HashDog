@@ -17,8 +17,6 @@ public:
 	~BruteForceGenerator();
 	void set_password_candidate(char *candidate);
 	void set_start_value(int value, int pointer_index);
-	static int get_characters_count();
-	static char getCharacter(int index);
 };
 
  
