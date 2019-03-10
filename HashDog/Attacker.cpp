@@ -45,16 +45,16 @@ void Attacker::reader_thread_attack(const char* dictionary_filename, std::atomic
 }
 
 void Attacker::perform_attack(int password_length, attack_mode mode, attacked_hash hash,
-	unsigned char* searched_digest, const char* dictionary_filename) {
+	unsigned char* searched_digest, const char* additional_param) {
 
 	initialize_attack(mode, hash, password_length, searched_digest);
-	initialize_vectors(dictionary_filename);
+	initialize_vectors(additional_param);
 	
 	std::vector<thread> readers;
-	if (mode == Attacker::attack_mode::brute_force) {
-		compute_thread_offset();
-	} else if (mode == Attacker::attack_mode::dictionary) {
-		readers.push_back(thread(&Attacker::reader_thread_attack, this, dictionary_filename, std::ref(successful_thread)));
+	if (mode == Attacker::attack_mode::dictionary) {
+		readers.push_back(thread(&Attacker::reader_thread_attack, this, additional_param, std::ref(successful_thread)));
+	} else {
+		compute_thread_offset(mode);
 	}
 
 	for (int i = 0; i < thread_num; ++i) {
@@ -112,7 +112,7 @@ void Attacker::initialize_attack(attack_mode mode, attacked_hash hash, int passw
 	this->searched_digest = searched_digest;
 }
 
-void Attacker::initialize_vectors(const char* dictionary_filename) {
+void Attacker::initialize_vectors(const char* additional_param) {
 	for (int i = 0; i < thread_num; ++i) {
 		switch (mode)
 		{
@@ -120,8 +120,10 @@ void Attacker::initialize_vectors(const char* dictionary_filename) {
 			generators.push_back(new BruteForceGenerator(password_length));
 			break;
 		case Attacker::dictionary:
-			generators.push_back(new DictionaryReader(password_length, nullptr));
+			generators.push_back(new DictionaryReader(password_length, ""));
 			break;
+		case Attacker::mask:
+			generators.push_back(new MaskGenerator(additional_param));
 		}
 		switch (hash)
 		{
@@ -138,10 +140,15 @@ void Attacker::initialize_vectors(const char* dictionary_filename) {
 	}
 }
 
-void Attacker::compute_thread_offset() {
-	int offset, index, characters_count = BruteForceGenerator::get_characters_count();
+void Attacker::compute_thread_offset(attack_mode mode) { //TODO: multiplexing over more bits
+	int offset, index = 0;
+	int characters_count = (mode == brute_force) ? char_count : static_cast<MaskGenerator*>(generators.at(0))->get_first_index_limit();
 	for (int i = 0; i < thread_num; ++i) {
-		offset = i*(characters_count / thread_num); index = 0;
-		static_cast<BruteForceGenerator*>(generators.at(i))->set_start_value(offset, index);
+		offset = i*(characters_count / thread_num);
+		if (mode == brute_force) {
+			static_cast<BruteForceGenerator*>(generators.at(i))->set_start_value(offset, index);
+		} else {
+			static_cast<MaskGenerator*>(generators.at(i))->set_start_value(offset, index);
+		}
 	}
 }

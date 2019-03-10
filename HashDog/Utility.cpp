@@ -40,3 +40,12 @@ void Utility::c_array_to_std_array(const char* input, arr& output, size_t length
 	memcpy(&output, input, length + 1);
 }
 
+char Utility::hex_pair_to_ascii_char(const char* hex) {
+	return (hex[0] << 8) & (hex[1]);
+}
+
+void Utility::ascii_char_to_hex_pair(const char ascii, char* pair) {
+	pair[0] = ascii & 0x00FF;
+	pair[1] = ascii & 0xFF00;
+}
+

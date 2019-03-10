@@ -46,9 +46,6 @@ void BruteForceGenerator::set_start_value(int value, int pointer_index) {
 		}
 	}
 }
-//prepaired for use in MT version
-void BruteForceGenerator::set_end_value(int value, int pointer_index) {
-}
 
 int BruteForceGenerator::get_characters_count() {
 	return char_count;

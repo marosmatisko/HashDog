@@ -11,5 +11,7 @@ public:
 	static void print_human_time(long duration);
 	static void std_array_to_c_array(const arr& input, char* output, size_t length);
 	static void c_array_to_std_array(const char* input, arr& output, size_t length);
+	static char hex_pair_to_ascii_char(const char* hex);
+	static void ascii_char_to_hex_pair(const char ascii, char* pair);
 };
 

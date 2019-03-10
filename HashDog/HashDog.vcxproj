@@ -163,8 +163,10 @@
     <ClInclude Include="BruteForceGenerator.h" />
     <ClInclude Include="CandidateGenerator.h" />
     <ClInclude Include="CustomHash.h" />
+    <ClInclude Include="Dictionary.h" />
     <ClInclude Include="DictionaryReader.h" />
     <ClInclude Include="FifoBuffer.h" />
+    <ClInclude Include="MaskGenerator.h" />
     <ClInclude Include="Md5Hash.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Sha1Hash.h" />
@@ -176,6 +178,7 @@
     <ClCompile Include="BruteForceGenerator.cpp" />
     <ClCompile Include="DictionaryReader.cpp" />
     <ClCompile Include="HashDog.cpp" />
+    <ClCompile Include="MaskGenerator.cpp" />
     <ClCompile Include="Md5Hash.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -186,6 +189,10 @@
     <ClCompile Include="Sha1Hash.cpp" />
     <ClCompile Include="Sha256Hash.cpp" />
     <ClCompile Include="Utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dic500.txt" />
+    <Text Include="rockyou.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,6 +7,7 @@
 #include <mutex>
 #include <string>
 
+
 #define arr std::array<char, 7>
 
 class DictionaryReader : public CandidateGenerator

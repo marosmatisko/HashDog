@@ -12,7 +12,7 @@ class Attacker
 {
 public:
 	enum attack_mode {
-		brute_force, dictionary
+		brute_force, dictionary, mask
 	};
 
 	enum attacked_hash {
@@ -21,6 +21,9 @@ public:
 
 	Attacker(int thread_num);
 	~Attacker();
+	void perform_brute_force_attack(int password_length, attacked_hash hash, unsigned char* searched_digest);
+	void perform_dictionary_attack(int password_length, attacked_hash hash, unsigned char* searched_digest, const char* dictionary_filename);
+	void perform_mask_attack();
 	void perform_attack(int password_length, attack_mode mode, attacked_hash hash, unsigned char* searched_digest, const char* dictionary_filename);
 	bool was_attack_successful();
 	void print_proof();
@@ -28,7 +31,7 @@ public:
 protected:
 	void initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest);
 	void initialize_vectors(const char* dictionary_filename);
-	void compute_thread_offset();
+	void compute_thread_offset(attack_mode mode);
 	void thread_attack(int thread_id);
 	bool attack_finished(int index);
 	void reader_thread_attack(const char* dictionary_filename, std::atomic<int>& succesful_thread);

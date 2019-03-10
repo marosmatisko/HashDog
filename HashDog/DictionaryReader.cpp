@@ -8,7 +8,7 @@ std::ifstream* DictionaryReader::file;
 
 DictionaryReader::DictionaryReader(size_t password_size, const char* filename) {
 	length = password_size;
-	if (filename) {
+	if (filename != "") {
 		file = new std::ifstream(filename, std::ifstream::out);
 		if (!file->is_open())
 			file->open(filename, std::ifstream::out);
