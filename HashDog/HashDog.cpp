@@ -6,10 +6,9 @@
 using namespace std;
 using namespace std::chrono;
 
-//brute-force: HashDog.exe <input word> -m/ -b/d/m
-
+//HashDog.exe <input word/input hash> <hash (-m/s1/s2)/searched_string_length (X)> <attack -b/d/m> <additional param - dictionary_file/mask>
 // %a - abedeca	%l - lowercase	%u - uppercase	%d - digit	%s - special char	%c - any char
-char* searched_input, *additional_param;
+char* searched_input, *additional_param, *input_digest;
 unsigned char* searched_digest;
 unsigned short pass_length = 6;
 Attacker::attacked_hash used_hash = Attacker::attacked_hash::md5;
@@ -21,8 +20,8 @@ int param_process(int argc, char* argv[]) {
 		return -1;
 	} else {
 		if (strlen(argv[1]) > 20) { //hash mode   
-			searched_digest = new unsigned char[strlen(argv[1]) + 1];
-			strcpy((char *)searched_digest, argv[1]);
+			input_digest = new char[strlen(argv[1]) + 1];
+			strcpy((char *)input_digest, argv[1]);
 
 			pass_length = (unsigned short)atoi(argv[2]);
 			switch (strlen(argv[1]) * 4)
@@ -38,7 +37,7 @@ int param_process(int argc, char* argv[]) {
 				used_hash = Attacker::attacked_hash::sha256;
 				break;
 			}
-		} else {
+		} else { // input string mode
 			searched_input = new char[strlen(argv[1]) + 1];
 			strcpy((char *)searched_input, argv[1]);
 			pass_length = (unsigned short)strlen(argv[1]);
@@ -90,8 +89,14 @@ int param_process(int argc, char* argv[]) {
 int main(int argc, char* argv[]) {
 	srand((unsigned int)time(NULL));
 
-	if (param_process(argc, argv) < 0) return 1;
-	cout << "Searching for password: " << searched_input << endl;
+	if (param_process(argc, argv) < 0) {
+		cout << "Bad params, exiting!" << endl;
+		return 1;
+	}
+	if (searched_input)
+		cout << "Searching for password: " << searched_input << endl;
+	else
+		cout << "Searching for password with hash: " << endl << input_digest << endl;
 
 	if (searched_digest == nullptr)
 		searched_digest = new unsigned char[used_hash/8 + 1];
@@ -113,6 +118,11 @@ int main(int argc, char* argv[]) {
 			hash = new CustomHash();
 		}
 		hash->hash_message((char *)searched_input, searched_digest);
+	} else { //normalize input digest to hex values
+		for (int i = 0; i < strlen(input_digest); i += 2) {
+			searched_digest[i / 2] = Utility::hex_pair_to_ascii_char(input_digest + i);
+		}
+		searched_digest[used_hash / 8] = '\0';
 	}
 	//ATTACK with stopwatch! 
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
@@ -120,7 +130,7 @@ int main(int argc, char* argv[]) {
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
 	if (black_hat->was_attack_successful())
-		black_hat->print_proof();
+		black_hat->print_proof(false);
 
 	long duration = (long)duration_cast<milliseconds>(t2 - t1).count();
 	Utility::print_human_time(duration);

@@ -80,17 +80,21 @@ bool Attacker::was_attack_successful() {
 	return successful_thread >= 0;
 }
 
-void Attacker::print_proof() {
+void Attacker::print_proof(bool debug) {
 	char* mdString = new char[hash/4+1];
 	char* mdString2 = new char[hash/4+1];
 
 	for (int i = 0; i < hash/8; ++i) {
-		sprintf(&mdString[i * 2], "%02X", (unsigned int)searched_digest[i]);
-		sprintf(&mdString2[i * 2], "%02X", (unsigned int)computed_digest[successful_thread][i]);
+		Utility::ascii_char_to_hex_pair(searched_digest[i], mdString + (i * 2));
+		Utility::ascii_char_to_hex_pair(computed_digest[successful_thread][i], mdString2 + (i * 2));
 	}
+	mdString[hash / 4] = '\0'; 
+	mdString2[hash / 4] = '\0';
 
-	cout << "Old hash: " << mdString << endl;
-	cout << "New hash: " << mdString2 << endl;
+	if (debug) {
+		cout << "Old hash: " << mdString << endl;
+		cout << "New hash: " << mdString2 << endl;
+	}
 	cout << "Original message was: " << input_string[successful_thread] << endl;
 
 	delete[] mdString; 

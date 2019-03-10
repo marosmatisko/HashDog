@@ -23,7 +23,7 @@ public:
 	~Attacker();
 	void perform_attack(int password_length, attack_mode mode, attacked_hash hash, unsigned char* searched_digest, const char* dictionary_filename);
 	bool was_attack_successful();
-	void print_proof();
+	void print_proof(bool debug);
 
 protected:
 	void initialize_attack(attack_mode mode, attacked_hash hash, int password_length, unsigned char* searched_digest);
