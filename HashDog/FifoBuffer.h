@@ -39,7 +39,6 @@ public:
 	}
 
 	inline bool empty() {
-		std::unique_lock<std::mutex> lock(this->mutex);
 		return buffer.empty();
 	}
 };
