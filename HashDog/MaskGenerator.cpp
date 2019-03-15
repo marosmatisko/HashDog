@@ -20,6 +20,7 @@ MaskGenerator::MaskGenerator(const char* input) {
 			case 's': { candidate_template[template_index] = special_chars; break; }
 			case 'u': { candidate_template[template_index] = big_alphabet; break; }
 			case 'c': { candidate_template[template_index] = any_char; break; }
+			case '%': { candidate_template[template_index] = '%'; break; }
 			}
 		} else {
 			candidate_template[template_index] = input[i];

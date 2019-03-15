@@ -162,6 +162,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ArgParse.h" />
     <ClInclude Include="Attacker.h" />
     <ClInclude Include="BruteForceGenerator.h" />
     <ClInclude Include="CandidateGenerator.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArgParse.cpp" />
     <ClCompile Include="Attacker.cpp" />
     <ClCompile Include="BruteForceGenerator.cpp" />
     <ClCompile Include="DictionaryReader.cpp" />

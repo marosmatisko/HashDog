@@ -11,6 +11,7 @@
 
 // TODO: add headers that you want to pre-compile here
 
+#include "ArgParse.h"
 #include "Attacker.h"
 #include "BruteForceGenerator.h"
 #include "CandidateGenerator.h"

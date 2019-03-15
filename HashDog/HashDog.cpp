@@ -14,71 +14,29 @@ unsigned short pass_length = 6;
 Attacker::attacked_hash used_hash = Attacker::attacked_hash::md5;
 Attacker::attack_mode attack = Attacker::attack_mode::brute_force;
 
-int param_process(int argc, char* argv[]) {
-	if (argc != 4 && argc != 5) {
-		cout << "Bad number of arguments!" << endl;
-		return -1;
-	} else {
-		if (strlen(argv[1]) > 20) { //hash mode   
-			input_digest = new char[strlen(argv[1]) + 1];
-			strcpy((char *)input_digest, argv[1]);
+bool param_process(int argc, char* argv[]) {
+	ArgParse* parser = new ArgParse(argc, argv);
+	bool params_valid;
 
-			pass_length = (unsigned short)atoi(argv[2]);
-			switch (strlen(argv[1]) * 4)
-			{
-			case 128:
-				used_hash = Attacker::attacked_hash::md5;
-				break;
-			case 160:
-				used_hash = Attacker::attacked_hash::sha1;
-				break;
-			case 256:
-			default:
-				used_hash = Attacker::attacked_hash::sha256;
-				break;
-			}
-		} else { // input string mode
-			searched_input = new char[strlen(argv[1]) + 1];
-			strcpy((char *)searched_input, argv[1]);
-			pass_length = (unsigned short)strlen(argv[1]);
-
-			switch (argv[2][1]) {
-			case 'm': 
-				used_hash = Attacker::attacked_hash::md5;
-				break;
-			case 's':
-				if (argv[2][2] == '1') {
-					used_hash = Attacker::attacked_hash::sha1;
-					break;
-				}
-			default:
-				used_hash = Attacker::attacked_hash::sha256;
-				break;
-			}
+	if (params_valid = parser->args_are_valid()) {
+		pass_length = parser->get_password_lenght();
+		if (!parser->input_is_hash()) {
+			searched_input = new char[strlen(argv[1])];
+			parser->set_input(searched_input);
 		}
-			switch (argv[3][1]) {
-			case 'm': 
-				attack = Attacker::attack_mode::mask; 
-				break;
-			case 'd':
-				attack = Attacker::attack_mode::dictionary; 
-				break;
-			case 'b': 
-			default:
-				attack = Attacker::attack_mode::brute_force; 
-				break;
-			}
-
-			if (attack != Attacker::attack_mode::brute_force) {
-				if (argc != 5) {
-					cout << "Missing additional parameter!" << endl;
-					return -1;
-				}
-				additional_param = new char[strlen(argv[4])];
-				strcpy((char *)additional_param, argv[4]);
-			}
+		else {
+			input_digest = new char[strlen(argv[1])];
+			parser->set_input(input_digest);
+		}
+		used_hash = parser->get_hash();
+		attack = parser->get_mode();
+		if (attack != Attacker::brute_force) {
+			additional_param = new char[strlen(argv[4])]; //FIX something wrong here!
+			parser->set_optional_param(additional_param);
+		}
+		cout << "Params set succesfully!" << endl;
 	}
-	return 1;
+	return params_valid;
 }
 
 	//*Amy69 - 37:20
@@ -89,44 +47,40 @@ int param_process(int argc, char* argv[]) {
 int main(int argc, char* argv[]) {
 	srand((unsigned int)time(NULL));
 
-	if (param_process(argc, argv) < 0) {
-		cout << "Bad params, exiting!" << endl;
+	if (!param_process(argc, argv)) {
 		return 1;
 	}
+
 	if (searched_input)
 		cout << "Searching for password: " << searched_input << endl;
 	else
 		cout << "Searching for password with hash: " << endl << input_digest << endl;
 
-	if (searched_digest == nullptr)
-		searched_digest = new unsigned char[used_hash/8 + 1];
 	Attacker *black_hat = new Attacker(2);
-
-	if (searched_input != nullptr) {
-		CustomHash* hash;
-		switch (used_hash) {
-		case Attacker::attacked_hash::md5:
-			hash = new Md5Hash();
-			break;
-		case Attacker::attacked_hash::sha1:
-			hash = new Sha1Hash();
-			break;
-		case Attacker::attacked_hash::sha256:
-			hash = new Sha256Hash();
-			break;
-		default:
-			hash = new CustomHash();
-		}
-		hash->hash_message((char *)searched_input, searched_digest);
-	} else { //normalize input digest to hex values
+	if (searched_digest == nullptr) {
+		searched_digest = new unsigned char[used_hash / 8 + 1];
 		for (int i = 0; i < strlen(input_digest); i += 2) {
 			searched_digest[i / 2] = Utility::hex_pair_to_ascii_char(input_digest + i);
 		}
 		searched_digest[used_hash / 8] = '\0';
+	} else {
+		CustomHash* hash;
+		switch (used_hash) {
+		case Attacker::attacked_hash::md5:
+			hash = new Md5Hash(); break;
+		case Attacker::attacked_hash::sha1:
+			hash = new Sha1Hash(); break;
+		case Attacker::attacked_hash::sha256:
+			hash = new Sha256Hash(); break;
+		default:
+			hash = new CustomHash();
+		}
+		hash->hash_message(searched_input, searched_digest);
 	}
+
 	//ATTACK with stopwatch! 
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	black_hat->perform_attack(pass_length, attack, used_hash, searched_digest, (char *)additional_param);
+	black_hat->perform_attack(pass_length, attack, used_hash, searched_digest, additional_param);
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 
 	if (black_hat->was_attack_successful())
