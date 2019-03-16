@@ -5,10 +5,15 @@ using namespace std;
 
 ArgParse::ArgParse(int argc, char* argv[]) : argc(argc), args_corrupted(false), argvs(&argv) {
 	switch (argv[3][1]) {
-	case 'b': process_bruteforce(); break;
-	case 'd': process_dictionary(); break;
-	case 'm': process_mask(); break;
-	default: args_corrupted = true;
+	case 'b': 
+		process_bruteforce(); break;
+	case 'd': 
+		process_dictionary(); break;
+	case 'm': 
+		process_mask(); break;
+	default: 
+		cout << "Invalid attack mode!" << endl;
+		args_corrupted = true;
 	}
 }
 
@@ -41,17 +46,18 @@ Attacker::attacked_hash ArgParse::get_hash() {
 }
 
 void ArgParse::set_optional_param(char* param) {
-	//param = new char[strlen((*argvs)[4])];
 	strcpy(param, (*argvs)[4]);
 }
 
 void ArgParse::set_input(char* input) {
 	strcpy(input, (*argvs)[1]);
-	//cout << "";
 }
 
 int ArgParse::get_password_lenght() {
-	return input_is_hash() ? atoi((*argvs)[2]) : (int)strlen((*argvs)[1]) / 4;
+	int result = input_is_hash() ? atoi((*argvs)[2]) : (int)strlen((*argvs)[1]);
+	result = result > 65500 ? (65536 - result) : abs(result);
+	if (result < 4 || result > 20) return 0;
+	else return result;
 }
 
 void ArgParse::process_bruteforce() {
@@ -103,7 +109,7 @@ void ArgParse::process_hash_function() {
 }
 
 void ArgParse::process_input() {
-	if (strlen((*argvs)[1]) > 4) {
+	if (strlen((*argvs)[1]) >= 4) {
 		process_hash_function();
 	} else {
 		cout << "Input must have at least 4 characters!" << endl;

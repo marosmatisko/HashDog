@@ -57,8 +57,9 @@ int main(int argc, char* argv[]) {
 		cout << "Searching for password with hash: " << endl << input_digest << endl;
 
 	Attacker *black_hat = new Attacker(2);
-	if (searched_digest == nullptr) {
-		searched_digest = new unsigned char[used_hash / 8 + 1];
+	searched_digest = new unsigned char[used_hash / 8 + 1];
+
+	if (input_digest != nullptr) {
 		for (int i = 0; i < strlen(input_digest); i += 2) {
 			searched_digest[i / 2] = Utility::hex_pair_to_ascii_char(input_digest + i);
 		}
