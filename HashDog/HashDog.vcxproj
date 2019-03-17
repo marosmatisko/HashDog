@@ -168,6 +168,7 @@
     <ClInclude Include="Attacker.h" />
     <ClInclude Include="BruteForceGenerator.h" />
     <ClInclude Include="CandidateGenerator.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="CustomHash.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="DictionaryReader.h" />

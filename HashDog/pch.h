@@ -15,6 +15,7 @@
 #include "Attacker.h"
 #include "BruteForceGenerator.h"
 #include "CandidateGenerator.h"
+#include "config.h"
 #include "CustomHash.h"
 #include "Dictionary.h"
 #include "DictionaryReader.h"
@@ -26,5 +27,6 @@
 #include "Utility.h"
 
 #include <iostream>
+#include <fstream>
 
 #endif //PCH_H

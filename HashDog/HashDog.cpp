@@ -6,8 +6,7 @@
 using namespace std;
 using namespace std::chrono;
 
-//HashDog.exe <input word/input hash> <hash (-m/s1/s2)/searched_string_length (X)> <attack -b/d/m> <additional param - dictionary_file/mask>
-// %a - abedeca	%l - lowercase	%u - uppercase	%d - digit	%s - special char	%c - any char
+// global variables
 char* searched_input, *additional_param, *input_digest;
 unsigned char* searched_digest;
 unsigned short pass_length = 6;
@@ -31,7 +30,7 @@ bool param_process(int argc, char* argv[]) {
 		used_hash = parser->get_hash();
 		attack = parser->get_mode();
 		if (attack != Attacker::brute_force) {
-			additional_param = new char[strlen(argv[4])]; //FIX something wrong here!
+			additional_param = new char[strlen(argv[4])];
 			parser->set_optional_param(additional_param);
 		}
 		cout << "Params set succesfully!" << endl;
@@ -39,24 +38,27 @@ bool param_process(int argc, char* argv[]) {
 	return params_valid;
 }
 
-	//*Amy69 - 37:20
-	//d5 ~ 1:09:30, 808080 (5k in rockyou) ~ 2.6s, wiggle(20k) ~ 8.6s, drew10 (150k) ~ 60.5s, *Amy69
-	//bud111 (1M) ~ 5:21.7, norado (1M4 - 10% rockyou) ~ 7:18.8, flirt4 (1M8) ~ 8:20, yupa88 (2M5) ~ 11:20
-	//Utility::generate_random_password(searched_string, pass_length - 3);
+void write_log(int argc, char* argv[], long duration) {
+	ofstream log_file;
+	log_file.open(log_filename, std::fstream::app);
+	for (int i = 1; i < argc; ++i) {
+		log_file.write(argv[i], strlen(argv[i]));
+		log_file << ";";
+	}
+	log_file << duration << ";" << endl;
+	log_file.close();
+}	
 
 int main(int argc, char* argv[]) {
 	srand((unsigned int)time(NULL));
-
-	if (!param_process(argc, argv)) {
-		return 1;
-	}
+	if (!param_process(argc, argv)) return 1;
 
 	if (searched_input)
 		cout << "Searching for password: " << searched_input << endl;
 	else
 		cout << "Searching for password with hash: " << endl << input_digest << endl;
 
-	Attacker *black_hat = new Attacker(2);
+	Attacker *black_hat = new Attacker(thread_num);
 	searched_digest = new unsigned char[used_hash / 8 + 1];
 
 	if (input_digest != nullptr) {
@@ -89,4 +91,6 @@ int main(int argc, char* argv[]) {
 
 	volatile long duration = (long)duration_cast<milliseconds>(t2 - t1).count();
 	Utility::print_human_time(duration);
+
+	if (logging_to_file) write_log(argc, argv, duration);
 }
