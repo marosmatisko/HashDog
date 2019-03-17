@@ -3,6 +3,9 @@
 #include "Attacker.h"
 #include <fstream>
 
+
+constexpr auto MAX_INPUT_LENGTH = 20;
+
 class ArgParse
 {
 private: 

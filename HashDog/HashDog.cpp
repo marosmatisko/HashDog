@@ -87,6 +87,6 @@ int main(int argc, char* argv[]) {
 	if (black_hat->was_attack_successful())
 		black_hat->print_proof(false);
 
-	long duration = (long)duration_cast<milliseconds>(t2 - t1).count();
+	volatile long duration = (long)duration_cast<milliseconds>(t2 - t1).count();
 	Utility::print_human_time(duration);
 }

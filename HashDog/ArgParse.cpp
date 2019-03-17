@@ -24,7 +24,7 @@ bool ArgParse::args_are_valid() {
 }
 
 bool ArgParse::input_is_hash() {
-	return strlen((*argvs)[1]) > 20;
+	return strlen((*argvs)[1]) > MAX_INPUT_LENGTH;
 }
 
 Attacker::attack_mode ArgParse::get_mode() {
@@ -56,7 +56,7 @@ void ArgParse::set_input(char* input) {
 int ArgParse::get_password_lenght() {
 	int result = input_is_hash() ? atoi((*argvs)[2]) : (int)strlen((*argvs)[1]);
 	result = result > 65500 ? (65536 - result) : abs(result);
-	if (result < 4 || result > 20) return 0;
+	if (result < 4 || result > MAX_INPUT_LENGTH) return 0;
 	else return result;
 }
 
@@ -98,7 +98,7 @@ void ArgParse::process_mask() {
 }
 
 void ArgParse::process_input_hash() {
-	(strlen((*argvs)[1]) > 20) ? process_hash() : process_input();
+	(strlen((*argvs)[1]) > MAX_INPUT_LENGTH) ? process_hash() : process_input();
 }
 
 void ArgParse::process_hash_function() {

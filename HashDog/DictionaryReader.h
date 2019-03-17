@@ -8,7 +8,7 @@
 #include <string>
 
 
-#define arr std::array<char, 7>
+#define arr std::array<char, MAX_INPUT_LENGTH + 1>
 
 class DictionaryReader : public CandidateGenerator
 {

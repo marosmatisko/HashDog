@@ -36,7 +36,7 @@ void DictionaryReader::set_password_candidate(char *candidate) {
 	}
 }
 
-void DictionaryReader::read_file(std::atomic<int>& successful_thread) { //exact length for now
+void DictionaryReader::read_file(std::atomic<int>& successful_thread) { //search for pass with exact length
 	char* temp_buffer = new char[1024];
 	arr temp;
 
@@ -44,6 +44,7 @@ void DictionaryReader::read_file(std::atomic<int>& successful_thread) { //exact 
 		if (strlen(temp_buffer) == length) {
 			Utility::c_array_to_std_array(temp_buffer, temp, length);
 			buffer.push(temp);
+			//std::this_thread::sleep_for(std::chrono::microseconds(1));
 		}
 	}
 	reading_complete = true;
