@@ -1,34 +1,33 @@
 # HashDog
 
-Bruteforce attack:
+### Bruteforce attack:
 ```
 Hashdog.exe <input> <hash_function> -b
 Hashdog.exe <hash> <length> -b
 ```
-Examples:
+#### Examples:
 ```
 Hashdog.exe Op1caaa1 -m -b
 Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -b
 ```
 
-Dictionary attack:
+### Dictionary attack:
 ```
 Hashdog.exe <input> <hash_function> -d <dic_filename>
 Hashdog.exe <hash> <length> -d <dic_filename>
 ```
-Examples:
+#### Examples:
 ```
 Hashdog.exe Op1caaa1 -m -d rockyou.txt
 Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -d rockyou.txt
 ```
 
-
-Mask attack:
+### Mask attack:
 ```
 Hashdog.exe <input> <hash_function> -m <mask>
 Hashdog.exe <hash> <length> -m <mask>
 ```
-Examples:
+#### Examples:
 ```
 Hashdog.exe Op1caaa1 -m -m %u%l%d%l%l%la1
 Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -m %u%l%d%l%l%la1
@@ -57,6 +56,7 @@ Please use generators: [MD5](https://passwordsgenerator.net/md5-hash-generator/)
  %u  | uppercase alphaber only 
  %s  | special characters only 
  %d  | digits only 
- %c  | all characters 
+ %c  | all characters   
+ 
 Standalone character represent itself, e.g. 'a' represent 'a'.
 For '%' use %%.
