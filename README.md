@@ -7,13 +7,15 @@ Supported hash functions: *MD5*, *SHA-1*, *SHA-256*\
 Supported attacks: *Bruteforce attack*, *Dictionary attack*, *Mask attack*
 
 You can use our program in two ways:
-- with input text make hash and use attack for that output 
+* with input text make hash and use attack for that output 
+    - input_message - |4 - 20| characters
 ```
 Hashdog.exe <input_message> <hash_function> <attack>
 ```
-- use hash and length of message as input and "break" that
+* use hash and length of message as input and "break" that
+    - input_hash - hex string in uppercase (length: MD5 = 32, SHA-1 = 40, SHA-256 = 64)
 ```
-Hashdog.exe <hash> <length_of_hashed_message> <attack>
+Hashdog.exe <input_hash> <length_of_hashed_message> <attack>
 ```
 
 You can use hash generators: 
@@ -82,10 +84,6 @@ Hashdog.exe <hash> <length> -m <mask>
 Hashdog.exe Op1caaa1 -m -m %u%l%d%l%l%la1
 Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -m %u%l%d%l%l%la1
 ```
-## Input
-from 4 to 20 chars
-## Hash 
-Valid MD5, SHA1 or SHA256 hash (32, 40 or 64 lenght hex string in uppercase!)
 
 
 
