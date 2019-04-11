@@ -38,8 +38,8 @@ Hashdog.exe <input_hash> <length_of_hashed_message> <attack>
 
 ### Bruteforce attack:
 ```
-Hashdog.exe <input> <hash_function> -b
-Hashdog.exe <hash> <length> -b
+Hashdog.exe <input_message> <hash_function> -b
+Hashdog.exe <input_hash> <length_of_hashed_message> -b
 ```
 #### Example:
 ```
@@ -49,8 +49,8 @@ Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -b
 
 ### Dictionary attack:
 ```
-Hashdog.exe <input> <hash_function> -d <dic_filename>
-Hashdog.exe <hash> <length> -d <dic_filename>
+Hashdog.exe <input_message> <hash_function> -d <dic_filename>
+Hashdog.exe <input_hash> <length_of_hashed_message> -d <dic_filename>
 ```
 #### Example:
 ```
@@ -60,8 +60,8 @@ Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -d rockyou.txt
 
 ### Mask attack:
 ```
-Hashdog.exe <input> <hash_function> -m <mask>
-Hashdog.exe <hash> <length> -m <mask>
+Hashdog.exe <input_message> <hash_function> -m <mask>
+Hashdog.exe <input_hash> <length_of_hashed_message> -m <mask>
 ```
 #### Mask symbols
 
