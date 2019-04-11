@@ -14,14 +14,10 @@ Hashdog.exe <input_message> <hash_function> <attack>
 ```
 * use hash and length of message as input and "break" that
     - input_hash - hex string in uppercase (length: MD5 = 32, SHA-1 = 40, SHA-256 = 64)
+    - You can use hash generators: [*MD5*](https://passwordsgenerator.net/md5-hash-generator/), [*SHA-1*](https://passwordsgenerator.net/sha1-hash-generator/), [*SHA-256*](https://passwordsgenerator.net/sha256-hash-generator/)
 ```
 Hashdog.exe <input_hash> <length_of_hashed_message> <attack>
 ```
-
-You can use hash generators: 
-[*MD5*](https://passwordsgenerator.net/md5-hash-generator/) 
-[*SHA-1*](https://passwordsgenerator.net/sha1-hash-generator/)
-[*SHA-256*](https://passwordsgenerator.net/sha256-hash-generator/)
 
 ### Hash functions
 | Option | Description |
@@ -37,27 +33,15 @@ You can use hash generators:
 | -d  | using *Dictionary attack* |
 | -m  | using *Mask attack* |
 
-## Make a hash
 
-### MD5
-```
-Hashdog.exe <input> <hash_function> -b
-```
-#### Usage:
-```
-Hashdog.exe <input> <hash_function> -b
-```
-
-### SHA-1
-
-### SHA-256
+## Usage
 
 ### Bruteforce attack:
 ```
 Hashdog.exe <input> <hash_function> -b
 Hashdog.exe <hash> <length> -b
 ```
-#### Examples:
+#### Example:
 ```
 Hashdog.exe Op1caaa1 -m -b
 Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -b
@@ -68,7 +52,7 @@ Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -b
 Hashdog.exe <input> <hash_function> -d <dic_filename>
 Hashdog.exe <hash> <length> -d <dic_filename>
 ```
-#### Examples:
+#### Example:
 ```
 Hashdog.exe Op1caaa1 -m -d rockyou.txt
 Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -d rockyou.txt
@@ -79,15 +63,7 @@ Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -d rockyou.txt
 Hashdog.exe <input> <hash_function> -m <mask>
 Hashdog.exe <hash> <length> -m <mask>
 ```
-#### Examples:
-```
-Hashdog.exe Op1caaa1 -m -m %u%l%d%l%l%la1
-Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -m %u%l%d%l%l%la1
-```
-
-
-
-## Mask symbols
+#### Mask symbols
 
  Option | Description 
  ------ | ----------- 
@@ -100,3 +76,9 @@ Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -m %u%l%d%l%l%la1
  
 Standalone character represent itself, e.g. 'a' represent 'a'.
 For '%' use %%.
+
+#### Example:
+```
+Hashdog.exe Op1caaa1 -m -m %u%l%d%l%l%la1
+Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -m %u%l%d%l%l%la1
+```
