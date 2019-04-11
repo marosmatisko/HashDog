@@ -1,10 +1,20 @@
 # HashDog.exe
 
-With our program you can make hashes with supported hash functions or use one of supported attacks ane "break" hash.
+With our program you can "break" hash of supported hash functions with supported attacks.
 
 ## Overview
-Supported hash functions: *MD5*, *SHA-1*, *SHA-256*
+Supported hash functions: *MD5*, *SHA-1*, *SHA-256*\
 Supported attacks: *Bruteforce attack*, *Dictionary attack*, *Mask attack*
+
+You can use our program in two ways:
+- with input text make hash and use attack for that output 
+```
+Hashdog.exe <input_message> <hash_function> <attack>
+```
+- use hash and length of message as input and "break" that
+```
+Hashdog.exe <hash> <length_of_hashed_message> <attack>
+```
 
 You can use hash generators: 
 [*MD5*](https://passwordsgenerator.net/md5-hash-generator/) 
