@@ -44,7 +44,7 @@ Hashdog.exe <input_hash> <length_of_hashed_message> -b
 #### Example:
 ```
 Hashdog.exe Op1caaa1 -m -b
-Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -b
+Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 8 -b
 ```
 
 ### Dictionary attack:
@@ -55,7 +55,7 @@ Hashdog.exe <input_hash> <length_of_hashed_message> -d <dic_filename>
 #### Example:
 ```
 Hashdog.exe Op1caaa1 -m -d rockyou.txt
-Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -d rockyou.txt
+Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 8 -d rockyou.txt
 ```
 
 ### Mask attack:
