@@ -80,5 +80,5 @@ For '%' use %%.
 #### Example:
 ```
 Hashdog.exe Op1caaa1 -m -m %u%l%d%l%l%la1
-Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 5 -m %u%l%d%l%l%la1
+Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 8 -m %u%l%d%l%l%la1
 ```
