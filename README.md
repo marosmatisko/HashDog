@@ -1,7 +1,10 @@
 # HashDog.exe
 
 With our program you can "break" hash of supported hash functions with supported attacks.
-
+## Requirements
+OpenSSL library
+* tested with version 1.1.1a for Windows
+* program needs to be built with correctly linked OpenSSL **include** and **lib** folder
 ## Overview
 Supported hash functions: *MD5*, *SHA-1*, *SHA-256*\
 Supported attacks: *Bruteforce attack*, *Dictionary attack*, *Mask attack*
