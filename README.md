@@ -10,4 +10,5 @@ Supported attacks: *Bruteforce attack*
 
 
 Hashdog.exe <input_hash> <length_of_password>
+
 Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 8
