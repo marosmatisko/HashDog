@@ -5,10 +5,10 @@ With our program you can "break" hash of supported hash functions with supported
 CUDA Toolkit
 * tested with version 10.1
 ## Overview
-Supported hash functions: *MD5*
+Supported hash functions: *MD5* \
 Supported attacks: *Bruteforce attack*
 
 
-Hashdog.exe <input_hash> <length_of_password>
+HashDog.exe <input_hash> <length_of_password>
 
-Hashdog.exe E701E45B0D65A6B43A09F1C4408F9070625356D1 8
+HashDog.exe 79c2b46ce2594ecbcb5b73e928345492 4
