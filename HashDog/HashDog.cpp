@@ -2,10 +2,6 @@
 //
 
 #include "pch.h"
-#include "BruteForceGenerator.h"
-#include "Md5Hash.h"
-#include "Utility.h"
-#include "Attacker.h"
 #include "md5.h"
 #include <cuda.h>
 #include <cuda_runtime_api.h>
@@ -13,11 +9,11 @@
 using namespace std;
 using namespace std::chrono;
 
-const short PASSWORD_LENGTH = 6;
-const int HASH_SIZE = 129;
 
 
-int main() {
+
+
+int main(int argc, char** argv) {
 	int main_index = 0;
 
 
@@ -37,29 +33,23 @@ int main() {
 			2.0*prop.memoryClockRate*(prop.memoryBusWidth / 8) / 1.0e6);
 	}
 
-	if (nDevices > 0)
+	if (argc != 3 || strlen(argv[1]) != 32 || strlen(argv[2]) > 1)
 	{
-		crack_md5();
-		
+		printf("\nIncorrect parameters, required input is HashDog.exe <hash> <password_length>");
+		return 0;
 	}
 
+	if (nDevices > 0)
+	{
+		crack_md5(argv[1], atoi(argv[2]));
 
+	}
+
+	else
+		printf("\nNo CUDA device found, quitting.");
+
+	return 0;
 	
-	Attacker *black_hat = new Attacker(1);
 
-	char* searched_string = new char[PASSWORD_LENGTH + 1];
-	unsigned char* searched_digest = new unsigned char[HASH_SIZE];
-	memcpy(searched_string, "A1p?.2", PASSWORD_LENGTH + 1);
-	Md5Hash *md5_hash = new Md5Hash();
-	md5_hash->hash_message(searched_string, searched_digest);
-
-	//ATTACK with stopwatch! 
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-	black_hat->perform_attack(PASSWORD_LENGTH, Attacker::attack_mode::brute_force, Attacker::attacked_hash::md5, searched_digest);
-	high_resolution_clock::time_point t2 = high_resolution_clock::now();
-
-	black_hat->print_proof();
-
-	auto duration = duration_cast<microseconds>(t2 - t1).count();
-	cout << "Hash computation time: " << duration << "us";
 }
+

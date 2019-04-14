@@ -8,7 +8,6 @@
 #include <iostream>
 #include <string.h>
 #include <sstream>
-#include "Md5Hash.h"
 #include<cuda.h>
 #include <cuda_runtime_api.h>
 #include <curand_kernel.h>
@@ -51,21 +50,18 @@
 
 #define CONST_WORD_LIMIT 10
 #define CONST_CHARSET_LIMIT 100
-
-#define CONST_CHARSET "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ,-_.?'&@#$%^*:~{}"
+#define CONST_CHARSET "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,-_.!?'&@#$%^*:~{}"
 #define CONST_CHARSET_LENGTH (sizeof(CONST_CHARSET) - 1)
 
-#define CONST_WORD_LENGTH_MIN 4
-#define CONST_WORD_LENGTH_MAX 6
 
-#define TOTAL_BLOCKS 1024
-#define TOTAL_THREADS 1024
+#define TOTAL_BLOCKS 256
+#define TOTAL_THREADS 256
 #define HASHES_PER_KERNEL 128UL
 
 
 
 
-__device__ char g_deviceCharset[CONST_CHARSET_LIMIT];
+__device__ char d_abedeca[CONST_CHARSET_LIMIT];
 
 __device__ void md5_hash(unsigned char* data, uint32_t length, uint32_t *a1, uint32_t *b1, uint32_t *c1, uint32_t *d1);
 
@@ -73,7 +69,8 @@ __device__ __host__ bool next(uint8_t* length, char* word, uint32_t increment);
 
 __global__ void md5_crack(uint8_t* wordLength, char* charsetWord, uint32_t* hash, char* g_device_cracked);
 
-void crack_md5();
+void crack_md5(char* input, int pass_lentgh);
 
 char *bin2hex(const unsigned char *bin, size_t len);
+//int CONST_PASSWORD_LENGTH;
 

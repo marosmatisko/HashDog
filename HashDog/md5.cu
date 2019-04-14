@@ -24,7 +24,6 @@
 
 #include "md5.h"
 
-char g_cracked[CONST_WORD_LIMIT];
 
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort = true)
@@ -201,29 +200,25 @@ __device__ __host__ bool next(uint8_t* length, char* word, uint32_t increment) {
 		*length = idx;
 	}
 
-	if (idx > CONST_WORD_LENGTH_MAX) {
+	if (idx > CONST_WORD_LIMIT) {
 		return false;
 	}
 
 	return true;
 }
 
-__global__ void md5_crack(uint8_t* wordLength, char* charsetWord, uint32_t* searched_hash, char* g_device_cracked) {
+__global__ void md5_crack(uint8_t* wordLength, char* charsetWord, uint32_t* searched_hash, char* word_cracked) {
 	uint32_t idx = (blockIdx.x * blockDim.x + threadIdx.x) * HASHES_PER_KERNEL;
-	/* Shared variables */
 	__shared__ char sharedCharset[CONST_CHARSET_LIMIT];
 
 	/* Thread variables */
 	char threadCharsetWord[CONST_WORD_LIMIT];
 	char threadTextWord[CONST_WORD_LIMIT];
 	uint8_t threadWordLength = *wordLength;
-	//printf("%u", *wordLength);
 	uint32_t threadHash01, threadHash02, threadHash03, threadHash04;
 
-	/* Copy everything to local memory */
 	memcpy(threadCharsetWord, charsetWord, CONST_WORD_LIMIT);
-	//memcpy(&threadWordLength, wordLength, sizeof(uint8_t));
-	memcpy(sharedCharset, g_deviceCharset, sizeof(uint8_t) * CONST_CHARSET_LIMIT);
+	memcpy(sharedCharset, d_abedeca, sizeof(uint8_t) * CONST_CHARSET_LIMIT);
 
 	/* Increment current word by thread index */
 	next(&threadWordLength, threadCharsetWord, idx);
@@ -233,62 +228,40 @@ __global__ void md5_crack(uint8_t* wordLength, char* charsetWord, uint32_t* sear
 			threadTextWord[i] = sharedCharset[threadCharsetWord[i]];
 		}
 
-		//if (threadWordLength == 4)
-		//{
-		//	(threadTextWord[3] << 24) | (threadTextWord[2] << 16) | (threadTextWord[1] << 8) | (threadTextWord[0]);
-		//	if (threadTextWord[0] == 'f' && threadTextWord[0] == 'e' && threadTextWord[0] == 'r' && threadTextWord[0] == 'o')
-		//	{
-		//		printf("mam ho");
-		//	}
 
-		//}
 
 		md5_hash((unsigned char*)threadTextWord, threadWordLength, &threadHash01, &threadHash02, &threadHash03, &threadHash04);
 
 		if (threadHash01 == searched_hash[0] && threadHash02 == searched_hash[1] && threadHash03 == searched_hash[2] && threadHash04 == searched_hash[3]) {
-			printf("%s", threadTextWord);
 
-			memcpy(g_device_cracked, threadTextWord, threadWordLength);
+			memcpy(word_cracked, threadTextWord, threadWordLength);
 		}
-
 		if (!next(&threadWordLength, threadCharsetWord, 1)) {
 			break;
 		}
 	}
 }
 
-void crack_md5() {
-	const short PASSWORD_LENGTH = 4;
-	const int HASH_SIZE = 32;
-	char* g_word;
-	cudaMallocManaged(&g_word, CONST_WORD_LIMIT);
-	char g_charset[CONST_CHARSET_LIMIT];
-	char g_cracked[CONST_WORD_LIMIT];
-	uint8_t* g_wordLength;
-	cudaMallocManaged(&g_wordLength, sizeof(uint8_t));
+void crack_md5(char* input, int pass_length) {
+	char* word;
+	int CONST_PASSWORD_LENGTH = pass_length;
+	cudaMallocManaged(&word, CONST_PASSWORD_LENGTH);
+	char abeceda[CONST_CHARSET_LIMIT];
+	char* heslo = (char*)malloc(CONST_PASSWORD_LENGTH);
+
+	uint8_t* wordLength;
+	cudaMallocManaged(&wordLength, sizeof(uint8_t));
 
 
-	char* searched_string = new char[PASSWORD_LENGTH + 1];
-	unsigned char* searched_digest = new unsigned char[HASH_SIZE];
+
 	unsigned char* hex = new unsigned char[256];
-	memcpy(searched_string, "fero", PASSWORD_LENGTH + 1);
-	//memcpy(hex, "ac6545028a5d090df842d8d9d674fc6e", 32 + 1);
-	memcpy(hex, "d3c1a5b4d60ae870a12fbde520ea11f9", 32 + 1);
-	//Md5Hash *md5_hash = new Md5Hash();
-	//md5_hash->hash_message(searched_string, searched_digest);
-	//printf("%s", searched_digest);
+	memcpy(hex, input, 32 + 1);
 
-
-	
-
-	//uint32_t md5Hash[4];
 	uint32_t* md5Hash;
 	cudaMallocManaged(&md5Hash, 4 * sizeof(uint32_t));
 	for (int i = 0; i < 4; i++)
 	{
 		char tmp[16];
-
-	//AC6545028A5D090DF842D8D9D674FC6E
 
 		memcpy(tmp, hex + i*8, 8);
 		sscanf(tmp, "%x", &md5Hash[i]);
@@ -296,48 +269,30 @@ void crack_md5() {
 	}
 
 
-	printf("lol");
 
-	printf("hladany hash: %u %u %u %u", md5Hash[0], md5Hash[1], md5Hash[2], md5Hash[3]);
+	printf("hladany hash: %s", hex);
 
 
-	memset(g_word, 0, CONST_WORD_LIMIT);
-	memset(g_cracked, 0, CONST_WORD_LIMIT);
-	memcpy(g_charset, CONST_CHARSET, CONST_CHARSET_LENGTH);
-	*g_wordLength = CONST_WORD_LENGTH_MIN;
+	memset(word, 0, CONST_PASSWORD_LENGTH);
+	memset(heslo, 0, CONST_PASSWORD_LENGTH);
+	memcpy(abeceda, CONST_CHARSET, CONST_CHARSET_LENGTH);
+	*wordLength = CONST_PASSWORD_LENGTH;
 
-	printf("\n word length: %u", *g_wordLength);
+	printf("\nword length: %u", *wordLength);
 
 
 	cudaSetDevice(0);
 
-	/* Time */
-	//cudaEvent_t clockBegin;
-	//cudaEvent_t clockLast;
 
 
-	//cudaEventCreate(&clockBegin);
-	//cudaEventCreate(&clockLast);
-	//cudaEventRecord(clockBegin, 0);
-
-	/*char* words;
-	cudaMallocManaged((void**)&words, sizeof(uint8_t) * CONST_WORD_LIMIT);*/
-
-	char* g_deviceCracked;
-	cudaMallocManaged((void**)&g_deviceCracked, sizeof(uint8_t) * CONST_WORD_LIMIT);
-	//cudaMallocManaged((void**)&g_cracked, sizeof(uint8_t) * CONST_WORD_LIMIT);
+	char* d_word, *d_word_cracked;
+	cudaMallocManaged((void**)&d_word, sizeof(uint8_t) * CONST_PASSWORD_LENGTH);
+	cudaMallocManaged((void**)&d_word_cracked, sizeof(uint8_t) * CONST_PASSWORD_LENGTH);
 
 
 
-	cudaMemcpyToSymbol(g_deviceCharset, g_charset, sizeof(uint8_t) * CONST_CHARSET_LIMIT, 0, cudaMemcpyHostToDevice);
-	//cudaMemcpyToSymbol(g_deviceCracked, g_cracked, sizeof(uint8_t) * CONST_WORD_LIMIT, 0, cudaMemcpyHostToDevice);
+	cudaMemcpyToSymbol(d_abedeca, abeceda, sizeof(uint8_t) * CONST_CHARSET_LIMIT, 0, cudaMemcpyHostToDevice);
 
-	/* Allocate on each device */
-
-	//cudaEvent_t start, stop;
-	//cudaEventCreate(&start);
-	//cudaEventCreate(&stop);
-	//cudaEventRecord(start);
 
 	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 	while (true) {
@@ -346,45 +301,23 @@ void crack_md5() {
 		bool found = false;
 
 
-		/* Copy current data */
-		//memcpy(words, g_word, sizeof(uint8_t) * CONST_WORD_LIMIT);
-		//int n_blocks = CONST_CHARSET_LENGTH
-
-		/* Start kernel */
-		(md5_crack<<<TOTAL_BLOCKS, TOTAL_THREADS>>> (g_wordLength, g_word, md5Hash, g_deviceCracked));
+		
+		(md5_crack<<<TOTAL_BLOCKS, TOTAL_THREADS>>> (wordLength, d_word, md5Hash, d_word_cracked));
 		cudaDeviceSynchronize();
-		//printf("%s", cudaGetErrorString(cudaGetLastError()));
+		
+		result = next(wordLength, d_word, TOTAL_THREADS * HASHES_PER_KERNEL * TOTAL_BLOCKS);
 
 
-		//printf("%u\n", g_wordLength);
-		/* Global increment */
-		result = next(g_wordLength, g_word, TOTAL_THREADS * HASHES_PER_KERNEL * TOTAL_BLOCKS);
-
-
-		/* Display progress */
-		//char word[CONST_WORD_LIMIT];
-
-		//for (int i = 0; i < *g_wordLength; i++) {
-		//	word[i] = g_charset[g_word[i]];
-		//}
-
-
-
-		//std::cout << "Notice: currently at " << std::string(word, g_wordLength) << " (" << (uint32_t)g_wordLength << ")" << std::endl;
-
-
-		/* Synchronize now */
-
-		/* Check result */
-		if ((*g_deviceCracked != NULL) && (g_deviceCracked[0] != '\0')) {
-			std::cout << "Notice: cracked " << g_deviceCracked << std::endl;
+		
+		if ((*d_word_cracked != NULL) && (d_word_cracked[0] != '\0')) {
+			std::cout << "\nCracked " << d_word_cracked << std::endl;
 			break;
 		}
 
 
 		if (!result || found) {
 			if (!result && !found) {
-				std::cout << "Notice: found nothing (host)" << std::endl;
+				std::cout << "\nFound nothing (host)" << std::endl;
 			}
 
 			break;
@@ -393,15 +326,6 @@ void crack_md5() {
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 
 
-	//cudaEventRecord(stop);
-
-	//float milliseconds = 0;
-	//cudaEventElapsedTime(&milliseconds, start, stop);
-
-	//cudaEventDestroy(start);
-	//cudaEventDestroy(stop);
-
-	//std::cout << "Time: " << milliseconds << " ms";
 
 
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
@@ -409,8 +333,7 @@ void crack_md5() {
 
 
 
-	/* Free on each device */
-	cudaFree(g_word);
+	cudaFree(word);
 }
 
 char *bin2hex(const unsigned char *bin, size_t len)
